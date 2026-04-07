@@ -1,0 +1,6 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+    <h1>Detalle de la lista: {{ lista.tienda.nombre }}</h1>
+    <p>Próximamente: Autocompletado y productos...</p>
+    <a href="{% url 'dashboard' %}">Volver</a>
+{% endblock %}

@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Tienda, MaestroProducto, ListaCompra, ItemLista
 
-# Register your models here.
+admin.site.register(Tienda)
+admin.site.register(MaestroProducto)
+admin.site.register(ListaCompra)
+admin.site.register(ItemLista)
