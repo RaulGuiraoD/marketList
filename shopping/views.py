@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto
 
 def lista_compra(request):
@@ -10,3 +10,14 @@ def lista_compra(request):
     
     productos = Producto.objects.all()
     return render(request, 'shopping/lista.html', {'prodcutos': productos})
+
+def completar_producto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    producto.completado = not producto.completado
+    producto.save()
+    return redirect('lista_compra')
+
+def eliminar_producto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    producto.delete()
+    return redirect('lista_compra')
