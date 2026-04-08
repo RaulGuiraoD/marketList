@@ -90,132 +90,119 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /*----------------------------------------------------------------------------------------------------------------------------**/ 
 
-let editMode = false;
+// Variable global para controlar el modo edición
+let isEditModeActive = false;
 
 function toggleEditMode() {
-    editMode = !editMode;
-    const isEditing = editMode;
+    isEditModeActive = !isEditModeActive;
     
-    document.getElementById('selectionTools').classList.toggle('d-none', !isEditing);
-    document.getElementById('floatingDeleteBar').classList.toggle('d-none', !isEditing);
-    
+    // Elementos comunes
+    const selectionTools = document.getElementById('selectionTools');
+    const floatingBar = document.getElementById('floatingDeleteBar');
     const btn = document.getElementById('btnEditMode');
-    btn.innerHTML = isEditing ? 
-        '<i class="bi bi-x-lg me-1 text-danger"></i> Cancelar' : 
-        '<i class="bi bi-pencil-square me-1 text-primary"></i> Seleccionar productos';
-
-    document.querySelectorAll('.check-container').forEach(el => el.classList.toggle('d-none', !isEditing));
-    document.querySelectorAll('.individual-delete').forEach(el => el.classList.toggle('d-none', isEditing));
     
-    if (!isEditing) {
-        document.getElementById('selectAll').checked = false;
-        toggleAll(document.getElementById('selectAll'));
+    // Detectamos si estamos en Catálogo o Historial buscando una clase específica
+    const isHistorial = document.querySelector('.item-seleccionable') !== null;
+
+    // Toggle visibilidad herramientas
+    selectionTools.classList.toggle('d-none', !isEditModeActive);
+    floatingBar.classList.toggle('d-none', !isEditModeActive);
+    
+    // Cambiar texto del botón según el modo y el lugar
+    if (isEditModeActive) {
+        btn.innerHTML = '<i class="bi bi-x-lg me-1 text-danger"></i> Cancelar';
+    } else {
+        const label = isHistorial ? 'listas' : 'productos';
+        btn.innerHTML = `<i class="bi bi-pencil-square me-1 text-primary"></i> Seleccionar ${label}`;
+    }
+
+    // Mostrar/Ocultar contenedores de checks y botones individuales
+    document.querySelectorAll('.check-container').forEach(el => el.classList.toggle('d-none', !isEditModeActive));
+    
+    // Ocultar botones individuales (diferentes clases según la página)
+    document.querySelectorAll('.individual-delete, .individual-actions').forEach(el => {
+        el.classList.toggle('d-none', isEditModeActive);
+    });
+    
+    // Si cancelamos, desmarcamos todo
+    if (!isEditModeActive) {
+        const selectAllCheck = document.getElementById('selectAll');
+        if (selectAllCheck) {
+            selectAllCheck.checked = false;
+            toggleAll(selectAllCheck);
+        }
     }
 }
 
 function handleItemClick(event, element) {
-    if (!editMode) return;
+    if (!isEditModeActive) return;
     
-    // Evitamos que se dispare si el clic fue directamente en el checkbox
+    // Si el clic es en un link o botón de acción real, no hacemos nada
+    if (event.target.tagName === 'A' || event.target.tagName === 'BUTTON' || event.target.closest('button')) {
+        return;
+    }
+
+    // Evitamos duplicar el disparo si se hace clic justo en el checkbox
     if (event.target.type !== 'checkbox') {
-        const cb = element.querySelector('.producto-checkbox');
-        cb.checked = !cb.checked;
+        const cb = element.querySelector('.producto-checkbox, .lista-checkbox');
+        if (cb) {
+            cb.checked = !cb.checked;
+            updateCount();
+        }
+    } else {
+        // Si hizo clic en el checkbox directamente
         updateCount();
     }
 }
 
 function toggleAll(source) {
-    const checkboxes = document.querySelectorAll('.producto-checkbox');
+    const checkboxes = document.querySelectorAll('.producto-checkbox, .lista-checkbox');
     checkboxes.forEach(cb => cb.checked = source.checked);
     updateCount();
 }
 
 function updateCount() {
-    const checkedCount = document.querySelectorAll('.producto-checkbox:checked').length;
-    document.getElementById('countSelected').innerText = checkedCount;
-    document.querySelector('#floatingDeleteBar button').disabled = (checkedCount === 0);
+    const checkboxes = document.querySelectorAll('.producto-checkbox:checked, .lista-checkbox:checked');
+    const checkedCount = checkboxes.length;
     
-    // Resaltar visualmente la fila seleccionada
+    const countBadge = document.getElementById('countSelected');
+    const deleteBtn = document.querySelector('#floatingDeleteBar button');
+    
+    if (countBadge) countBadge.innerText = checkedCount;
+    if (deleteBtn) deleteBtn.disabled = (checkedCount === 0);
+    
+    // Efectos visuales según el tipo de item
+    // Para productos (Catálogo)
     document.querySelectorAll('.item-maestro').forEach(item => {
         const cb = item.querySelector('.producto-checkbox');
-        if (cb.checked) {
-            item.style.backgroundColor = 'rgba(13, 110, 253, 0.05)';
-        } else {
-            item.style.backgroundColor = 'transparent';
+        item.style.backgroundColor = cb.checked ? 'rgba(13, 110, 253, 0.05)' : 'transparent';
+    });
+
+    // Para listas (Historial)
+    document.querySelectorAll('.item-seleccionable').forEach(item => {
+        const cb = item.querySelector('.lista-checkbox');
+        if (cb) {
+            item.style.transform = cb.checked ? 'scale(0.98)' : 'scale(1)';
+            item.style.opacity = cb.checked ? '0.8' : '1';
         }
     });
 }
 
 function showDeleteModal() {
-    const checkedCount = document.querySelectorAll('.producto-checkbox:checked').length;
-    document.getElementById('modalCount').innerText = checkedCount;
-    const modal = new bootstrap.Modal(document.getElementById('modalConfirmMultiple'));
-    modal.show();
-}
-
-function submitMultipleDelete() {
-    document.getElementById('formDeleteMultiple').submit();
-}
-
-/*----------------------------------------------------------------------------------------------------------------------------**/ 
-let editModeHistorial = false;
-
-function toggleEditMode() {
-    editModeHistorial = !editModeHistorial;
-    const isEditing = editModeHistorial;
+    const checkboxes = document.querySelectorAll('.producto-checkbox:checked, .lista-checkbox:checked');
+    const checkedCount = checkboxes.length;
     
-    document.getElementById('selectionTools').classList.toggle('d-none', !isEditing);
-    document.getElementById('floatingDeleteBar').classList.toggle('d-none', !isEditing);
+    const modalCountLabel = document.getElementById('modalCount');
+    if (modalCountLabel) modalCountLabel.innerText = checkedCount;
     
-    const btn = document.getElementById('btnEditMode');
-    btn.innerHTML = isEditing ? 
-        '<i class="bi bi-x-lg me-1 text-danger"></i> Cancelar' : 
-        '<i class="bi bi-pencil-square me-1 text-primary"></i> Seleccionar listas';
-
-    document.querySelectorAll('.check-container').forEach(el => el.classList.toggle('d-none', !isEditing));
-    document.querySelectorAll('.individual-actions').forEach(el => el.classList.toggle('d-none', isEditing));
-    
-    if (!isEditing) {
-        document.getElementById('selectAll').checked = false;
-        toggleAll(document.getElementById('selectAll'));
+    const modalElement = document.getElementById('modalConfirmMultiple');
+    if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
     }
 }
 
-function handleItemClick(event, element) {
-    if (!editModeHistorial) return;
-    
-    if (event.target.type !== 'checkbox' && event.target.tagName !== 'BUTTON' && event.target.tagName !== 'A') {
-        const cb = element.querySelector('.lista-checkbox');
-        cb.checked = !cb.checked;
-        updateCount();
-    }
-}
-
-function toggleAll(source) {
-    const checkboxes = document.querySelectorAll('.lista-checkbox');
-    checkboxes.forEach(cb => cb.checked = source.checked);
-    updateCount();
-}
-
-function updateCount() {
-    const checkedCount = document.querySelectorAll('.lista-checkbox:checked').length;
-    document.getElementById('countSelected').innerText = checkedCount;
-    document.querySelector('#floatingDeleteBar button').disabled = (checkedCount === 0);
-    
-    document.querySelectorAll('.item-seleccionable').forEach(item => {
-        const cb = item.querySelector('.lista-checkbox');
-        item.style.transform = cb.checked ? 'scale(0.98)' : 'scale(1)';
-        item.style.opacity = cb.checked ? '0.8' : '1';
-    });
-}
-
-function showDeleteModal() {
-    const checkedCount = document.querySelectorAll('.lista-checkbox:checked').length;
-    document.getElementById('modalCount').innerText = checkedCount;
-    const modal = new bootstrap.Modal(document.getElementById('modalConfirmMultiple'));
-    modal.show();
-}
-
 function submitMultipleDelete() {
-    document.getElementById('formDeleteMultiple').submit();
+    const form = document.getElementById('formDeleteMultiple');
+    if (form) form.submit();
 }

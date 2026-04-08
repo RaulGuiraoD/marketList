@@ -299,13 +299,13 @@ def categorizar_mercadona(nombre_prod):
         ],
         'Salsas': [
             'mayones', 'ketchup', 'mostaz', 'brava', 'soja', 'gajo', 'alioli',
-            'salsa', 'tabasco', 'teriyaki', 'pesto', 'bolognesa', 'carbonara',
+            'salsa', 'tabasco', 'teriyaki', 'pesto', 'boloñesa', 'carbonara',
             'vinagreta', 'barbacoa', 'bbq', 'roquefort'
         ],
         'Aperitivos': [
             'patat bolsa', 'patatas bolsa', 'papas', 'snack', 'fruto seco', 'almendr', 
             'avellan', 'nueces', 'pistacho', 'pipas', 'palomit', 'nachos', 
-            'tortillita', 'cortez', 'cacahuete', 'anacard', 'picos', 'regaña'
+            'tortillita', 'cortez', 'cacahuete', 'anacard', 'picos', 'regaña', 
         ],
         'Pescadería': [
             'merluz', 'bacala', 'gamba', 'langostin', 'mejillon', 'pulpo', 
@@ -327,12 +327,15 @@ def categorizar_mercadona(nombre_prod):
         'Frutería y Verdura': [
             'patat', 'ceboll', 'ajo', 'lechug', 'tomat', 'platan', 'manzan', 'per', 
             'frut', 'verdur', 'aguacat', 'limon', 'naranj', 'fres', 'uvas',
-            'pimiento', 'calabaci', 'zanahori', 'seta', 'champi', 'piña', 'kiwi'
+            'pimiento', 'calabaci', 'zanahori', 'seta', 'champi', 'piña', 'kiwi' 'boniat', 'bonia', 
+            'bata', 'batata'
         ],
-        'Carnicería/Charcutería': [
-            'poll', 'terner', 'cerd', 'pav', 'jamon', 'lomo', 'embuti', 'chori', 
-            'salchich', 'morta', 'filet', 'hamburg', 'alit', 'carn', 'bacon', 
-            'fuet', 'pancet', 'ques', 'pate', 'sobrasad', 'pechug'
+        'Carnicería': [
+            'poll', 'terner', 'cerd', 'lomo', 'filet', 'hamburg', 'alit', 'carn', 'pechug', 'torrez'
+        ],
+        'Charcutería/Quesos': [
+            'embuti', 'chori', 'salchich', 'morta', 'pav', 'jamon', 'bacon', 
+            'fuet', 'pancet', 'ques', 'pate', 'sobrasad', 'brie', 'parmesano'
         ],
         'Panadería y Dulces': [
             'pan', 'barr', 'hogaz', 'mold', 'croiss', 'napolitan', 'gallet', 
@@ -341,7 +344,7 @@ def categorizar_mercadona(nombre_prod):
         ],
         'Bebidas y Bodega': [
             'agu', 'refresc', 'col', 'fant', 'cervez', 'vin', 'zum', 'energet', 
-            'isoton', 'tint', 'sidr', 'caser', 'tonica'
+            'isoton', 'tint', 'sidr', 'caser', 'tonica', 'bati'
         ],
         'Limpieza': [
             'detergent', 'suaviz', 'lavavajill', 'lejia', 'fregasuel', 'limpia', 
