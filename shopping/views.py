@@ -257,6 +257,14 @@ def eliminar_lista(request, lista_id):
         lista.delete()
     return redirect('dashboard')
 
+def eliminar_multiple_listas(request):
+    if request.method == 'POST':
+        ids_a_borrar = request.POST.getlist('listas_ids')
+        if ids_a_borrar:
+            # Esto borrará las listas y, si tienes Cascade en el modelo, sus productos
+            ListaCompra.objects.filter(id__in=ids_a_borrar).delete()
+    return redirect('listas_archivadas') # O el nombre de tu vista de historial
+
 def gestionar_maestro(request):
     # Ver todos los productos ordenados alfabéticamente
     productos = MaestroProducto.objects.all().order_by('nombre')

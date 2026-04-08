@@ -23,6 +23,7 @@ function addFromSugerencia(nombre) {
     document.getElementById('formAdd').submit();
     showToast("Producto añadido: " + nombre);
 }
+/*----------------------------------------------------------------------------------------------------------------------------**/ 
 
 document.addEventListener('DOMContentLoaded', function() {
     let intervalId = null;
@@ -87,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+/*----------------------------------------------------------------------------------------------------------------------------**/ 
 
 let editMode = false;
 
@@ -146,6 +148,69 @@ function updateCount() {
 
 function showDeleteModal() {
     const checkedCount = document.querySelectorAll('.producto-checkbox:checked').length;
+    document.getElementById('modalCount').innerText = checkedCount;
+    const modal = new bootstrap.Modal(document.getElementById('modalConfirmMultiple'));
+    modal.show();
+}
+
+function submitMultipleDelete() {
+    document.getElementById('formDeleteMultiple').submit();
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------**/ 
+let editModeHistorial = false;
+
+function toggleEditMode() {
+    editModeHistorial = !editModeHistorial;
+    const isEditing = editModeHistorial;
+    
+    document.getElementById('selectionTools').classList.toggle('d-none', !isEditing);
+    document.getElementById('floatingDeleteBar').classList.toggle('d-none', !isEditing);
+    
+    const btn = document.getElementById('btnEditMode');
+    btn.innerHTML = isEditing ? 
+        '<i class="bi bi-x-lg me-1 text-danger"></i> Cancelar' : 
+        '<i class="bi bi-pencil-square me-1 text-primary"></i> Seleccionar listas';
+
+    document.querySelectorAll('.check-container').forEach(el => el.classList.toggle('d-none', !isEditing));
+    document.querySelectorAll('.individual-actions').forEach(el => el.classList.toggle('d-none', isEditing));
+    
+    if (!isEditing) {
+        document.getElementById('selectAll').checked = false;
+        toggleAll(document.getElementById('selectAll'));
+    }
+}
+
+function handleItemClick(event, element) {
+    if (!editModeHistorial) return;
+    
+    if (event.target.type !== 'checkbox' && event.target.tagName !== 'BUTTON' && event.target.tagName !== 'A') {
+        const cb = element.querySelector('.lista-checkbox');
+        cb.checked = !cb.checked;
+        updateCount();
+    }
+}
+
+function toggleAll(source) {
+    const checkboxes = document.querySelectorAll('.lista-checkbox');
+    checkboxes.forEach(cb => cb.checked = source.checked);
+    updateCount();
+}
+
+function updateCount() {
+    const checkedCount = document.querySelectorAll('.lista-checkbox:checked').length;
+    document.getElementById('countSelected').innerText = checkedCount;
+    document.querySelector('#floatingDeleteBar button').disabled = (checkedCount === 0);
+    
+    document.querySelectorAll('.item-seleccionable').forEach(item => {
+        const cb = item.querySelector('.lista-checkbox');
+        item.style.transform = cb.checked ? 'scale(0.98)' : 'scale(1)';
+        item.style.opacity = cb.checked ? '0.8' : '1';
+    });
+}
+
+function showDeleteModal() {
+    const checkedCount = document.querySelectorAll('.lista-checkbox:checked').length;
     document.getElementById('modalCount').innerText = checkedCount;
     const modal = new bootstrap.Modal(document.getElementById('modalConfirmMultiple'));
     modal.show();

@@ -11,6 +11,7 @@ urlpatterns = [
     path('lista/reabrir/<int:lista_id>/', views.reabrir_lista, name='reabrir_lista'),
     path('estadisticas/', views.estadisticas, name='estadisticas'),
     path('lista/eliminar/<int:lista_id>/', views.eliminar_lista, name='eliminar_lista'),
+    path('historial/eliminar-multiple/', views.eliminar_multiple_listas, name='eliminar_multiple_listas'),
     path('maestro/', views.gestionar_maestro, name='gestionar_maestro'),
     path('maestro/eliminar/<int:producto_id>/', views.eliminar_producto_maestro, name='eliminar_producto_maestro'),
     path('maestro/eliminar-multiple/', views.eliminar_multiple_maestros, name='eliminar_multiple_maestros'),

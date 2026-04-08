@@ -7,7 +7,7 @@
 <div class="row justify-content-center">
     <div class="col-12 col-md-8 col-lg-6 text-center">
         
-        <div class="d-flex justify-content-between align-items-center mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
             <a href="{% url 'dashboard' %}" class="btn btn-light rounded-circle shadow-sm btn-back">
                 <i class="bi bi-chevron-left"></i>
             </a>
@@ -15,60 +15,99 @@
             <div class="spacer-header"></div>
         </div>
 
-        <section class="section-gap">
-            <div class="row g-3">
-                {% for lista in listas %}
-                <div class="col-12">
-                    <div class="card card-historial border-0 shadow-sm p-3 text-start" 
-                         style="border-left: 6px solid {{ lista.tienda.color_hex }} !important;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-1 text-dark">{{ lista.tienda.nombre }}</h6>
-                                <p class="text-muted small mb-2 text-uppercase fw-bold label-frecuencia">
-                                    {{ lista.fecha_creacion|date:"d M Y" }} • {{ lista.items.count }} productos
-                                </p>
-                                
-                                {% if lista.total_ticket > 0 %}
-                                    <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">
-                                        {{ lista.total_ticket }} €
-                                    </span>
-                                {% else %}
-                                    <span class="badge bg-light text-muted rounded-pill px-3 py-2">
-                                        Sin importe
-                                    </span>
-                                {% endif %}
-                            </div>
+        <div class="mb-4">
+            <button type="button" id="btnEditMode" class="btn btn-white btn-sm rounded-pill px-4 shadow-sm border fw-bold text-uppercase" 
+                    style="font-size: 0.7rem; letter-spacing: 0.5px;" onclick="toggleEditMode()">
+                <i class="bi bi-pencil-square me-1 text-primary"></i> Seleccionar listas
+            </button>
+        </div>
 
-                            <div class="d-flex flex-column gap-2">
-                                <a href="{% url 'ver_lista' lista.id %}" class="btn btn-sm btn-action-historial btn-view-historial">
-                                    VER
-                                </a>
-                                <form method="POST" action="{% url 'reabrir_lista' lista.id %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-action-historial btn-reopen-historial w-100">
+        <form id="formDeleteMultiple" method="POST" action="{% url 'eliminar_multiple_listas' %}">
+            {% csrf_token %}
+
+            <div id="selectionTools" class="d-none justify-content-between align-items-center mb-3 px-3">
+                <div class="form-check text-start">
+                    <input class="form-check-input shadow-none" type="checkbox" id="selectAll" onclick="toggleAll(this)">
+                    <label class="form-check-label small fw-bold text-muted" for="selectAll">MARCAR TODAS</label>
+                </div>
+                <span id="countSelected" class="badge bg-primary rounded-pill">0</span>
+            </div>
+
+            <section class="section-gap pb-5">
+                <div class="row g-3">
+                    {% for lista in listas %}
+                    <div class="col-12">
+                        <div class="card card-historial border-0 shadow-sm p-3 text-start item-seleccionable" 
+                             style="border-left: 6px solid {{ lista.tienda.color_hex }} !important; cursor: pointer;"
+                             onclick="handleItemClick(event, this)">
+                            
+                            <div class="d-flex align-items-center">
+                                <div class="check-container d-none me-3">
+                                    <input class="form-check-input lista-checkbox shadow-none" type="checkbox" 
+                                           name="listas_ids" value="{{ lista.id }}" onclick="event.stopPropagation(); updateCount();">
+                                </div>
+
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-1 text-dark">{{ lista.tienda.nombre }}</h6>
+                                    <p class="text-muted small mb-2 text-uppercase fw-bold label-frecuencia">
+                                        {{ lista.fecha_creacion|date:"d M Y" }} • {{ lista.items.count }} productos
+                                    </p>
+                                    
+                                    {% if lista.total_ticket > 0 %}
+                                        <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">
+                                            {{ lista.total_ticket }} €
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-light text-muted rounded-pill px-3 py-2">
+                                            Sin importe
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                                <div class="d-flex flex-column gap-2 individual-actions">
+                                    <a href="{% url 'ver_lista' lista.id %}" class="btn btn-sm btn-action-historial btn-view-historial">
+                                        VER
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-action-historial btn-reopen-historial w-100" 
+                                            onclick="event.stopPropagation(); showReopenModal('{{ lista.id }}')">
                                         REABRIR
                                     </button>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                {% empty %}
-                <div class="col-12 text-center py-5">
-                    <div class="card border-0 shadow-sm py-5 card-rounded">
-                        <div class="card-body">
-                            <i class="bi bi-archive text-muted opacity-25 fs-1 d-block mb-3"></i>
-                            <p class="text-muted mb-4">No hay compras en el historial todavía</p>
-                            <a href="{% url 'dashboard' %}" class="btn btn-primary rounded-pill px-4 fw-bold">
-                                EMPEZAR UNA COMPRA
-                            </a>
-                        </div>
+                    {% empty %}
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-archive text-muted opacity-25 fs-1 d-block mb-3"></i>
+                        <p class="text-muted">No hay historial</p>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-        </section>
+            </section>
 
+            <div id="floatingDeleteBar" class="fixed-bottom p-4 d-none col-12 col-md-8 col-lg-6 mx-auto" style="z-index: 1030;">
+                <button type="button" class="btn btn-danger w-100 py-3 fw-bold shadow-lg text-uppercase label-spacing" 
+                        style="border-radius: 18px;" onclick="showDeleteModal()">
+                    <i class="bi bi-trash3 me-2"></i> Eliminar seleccionadas
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalConfirmMultiple" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 card-rounded shadow-lg">
+            <div class="modal-body p-4 text-center">
+                <i class="bi bi-exclamation-circle text-danger fs-1 mb-3 d-block"></i>
+                <h6 class="fw-bold text-uppercase mb-2">¿Borrar historial?</h6>
+                <p class="text-muted small mb-4">Vas a eliminar <span id="modalCount" class="fw-bold text-dark">0</span> listas de forma permanente.</p>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-danger py-2 fw-bold text-uppercase" style="border-radius: 12px; font-size: 0.75rem;" onclick="submitMultipleDelete()">Sí, eliminar</button>
+                    <button type="button" class="btn btn-light py-2 fw-bold text-uppercase text-muted" style="border-radius: 12px; font-size: 0.75rem;" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
