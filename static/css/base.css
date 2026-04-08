@@ -1,5 +1,5 @@
 :root {
-    --bg-warm: #fdfcf9;
+    --bg-warm: #fcfbf6;
     --primary-green: #2d5a27;
     --primary-green-light: #e8f5e9;
     --text-dark: #2c2c2c;
@@ -197,7 +197,7 @@ body {
     font-weight: 700 !important;
 }
 
-/* --- Estilos de Estadísticas (Refactorizados) --- */
+/* --- Estilos de Estadísticas --- */
 
 /* Separación modular entre bloques */
 .section-gap {
@@ -293,20 +293,41 @@ body {
 
 /* Input de añadir */
 .input-group-rounded {
-    border-radius: 18px;
+    background-color: white;
+    border-radius: 50px !important; /* Forma de cápsula */
+    padding: 4px; /* Crea el efecto de que el botón flota dentro */
     overflow: hidden;
 }
 
 .input-add-item {
-    font-size: 1rem !important;
-    height: 60px;
+    border-radius: 50px !important;
+    height: 50px;
+    font-weight: 500;
 }
 
-.btn-add-icon {
-    width: 60px;
+.input-add-item:focus {
+    box-shadow: none; /* Quitamos el brillo azul feo de Bootstrap */
+}
+
+.btn-add-swift {
+    border-radius: 50px !important; /* Botón circular o muy redondeado */
+    width: 42px; /* Lo hacemos casi cuadrado para que sea un círculo */
+    height: 42px;
+    margin: 4px; /* Margen interno para que no toque los bordes del div */
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0 !important; /* Reset de padding para centrar el icono */
+    transition: all 0.3s ease;
+}
+
+.btn-add-swift:active {
+    transform: scale(0.9); /* Efecto de pulsación */
+}
+
+.btn-add-swift i {
+    font-size: 1.2rem;
+    -webkit-text-stroke: 1px; /* Hace el icono del + un pelín más grueso */
 }
 
 /* Items de la lista */

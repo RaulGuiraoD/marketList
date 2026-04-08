@@ -11,10 +11,11 @@
             <a href="{% url 'dashboard' %}" class="btn btn-light rounded-circle shadow-sm btn-back">
                 <i class="bi bi-chevron-left"></i>
             </a>
-            <div class="d-flex align-items-center gap-2">
-                <h4 class="fw-bold mb-0 text-uppercase label-spacing">{{ lista.tienda.nombre }}</h4>
-                <span class="badge rounded-circle shadow-sm" 
-                      style="background-color: {{ lista.tienda.color_hex }}; width: 12px; height: 12px; border: 2px solid white; display: inline-block;"> </span>
+            <div class="d-flex align-items-center justify-content-center">
+                <h4 class="fw-bold mb-0 text-uppercase">{{ lista.tienda.nombre }}</h4>
+                <button type="button" class="btn btn-sm btn-light ms-2 rounded-circle" data-bs-toggle="modal" data-bs-target="#modalCambiarTienda">
+                    <i class="bi bi-arrow-left-right" style="font-size: 0.8rem;"></i>
+                </button>
             </div>
             <div class="spacer-header"></div>
         </div>
@@ -45,7 +46,7 @@
                             {% endfor %}
                         </datalist>
 
-                        <button type="submit" class="btn btn-primary px-4">
+                        <button type="submit" class="btn btn-primary btn-add-swift">
                             <i class="bi bi-plus-lg"></i>
                         </button>
                     </div>
@@ -209,6 +210,35 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCambiarTienda" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 card-rounded shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h6 class="fw-bold text-uppercase mb-0">Cambiar Tienda</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form method="POST" action="{% url 'cambiar_tienda_lista' lista.id %}">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="small fw-bold text-muted mb-2">SELECCIONA NUEVO DESTINO:</label>
+                        <select name="nueva_tienda" class="form-select border-0 shadow-sm py-2 px-3">
+                            {% for tienda in tiendas_disponibles %}
+                                <option value="{{ tienda.id }}" {% if tienda == lista.tienda %}selected{% endif %}>
+                                    {{ tienda.nombre }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold text-uppercase" style="border-radius: 12px;">
+                        Actualizar Tienda
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

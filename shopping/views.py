@@ -45,6 +45,21 @@ def eliminar_tienda(request, tienda_id):
     tienda.delete()
     return redirect('gestionar_tiendas')
 
+def cambiar_tienda_lista(request, lista_id):
+    if request.method == 'POST':
+        nueva_tienda_id = request.POST.get('nueva_tienda')
+        
+        # Obtenemos la lista y la nueva tienda, o lanzamos un error 404 si no existen
+        lista = get_object_or_404(ListaCompra, id=lista_id)
+        nueva_tienda = get_object_or_404(Tienda, id=nueva_tienda_id)
+        
+        # Cambiamos la tienda y guardamos
+        lista.tienda = nueva_tienda
+        lista.save()
+        
+    # Redirigimos de vuelta a la misma lista, que ahora mostrará la nueva tienda
+    return redirect('ver_lista', lista_id=lista.id)
+
 def editar_tienda(request, tienda_id):
     tienda = get_object_or_404(Tienda, id=tienda_id)
     if request.method == 'POST':
@@ -85,6 +100,7 @@ def cambiar_cantidad(request, item_id, operacion):
 # En tu ver_lista actual, asegúrate de que el POST maneje enteros
 def ver_lista(request, lista_id):
     lista = get_object_or_404(ListaCompra, id=lista_id)
+    tiendas_disponibles = Tienda.objects.all()
     
     if request.method == 'POST':
         nombre_prod = request.POST.get('nombre').strip().capitalize()
@@ -139,6 +155,7 @@ def ver_lista(request, lista_id):
     
     return render(request, 'shopping/lista_detalle.html', {
         'lista': lista,
+        'tiendas_disponibles': tiendas_disponibles,
         'items': items,
         'sugerencias': MaestroProducto.objects.all().order_by('-frecuencia_uso')[:12],
         'orden_actual': orden # Para saber qué botón marcar como activo
