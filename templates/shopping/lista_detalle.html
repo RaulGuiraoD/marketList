@@ -82,7 +82,7 @@
                         </div>
                     {% endifchanged %}
 
-                    <div class="list-group-item d-flex align-items-center border-0 shadow-sm item-producto-lista {% if item.comprado %}item-muted{% endif %}">
+                    <div class="list-group-item d-flex align-items-center border-0 shadow-sm item-producto-lista {% if item.comprado %}item-muted{% endif %} mb-2">
                         
                         <div class="me-3">
                             {% if not lista.esta_finalizada %}
@@ -102,8 +102,26 @@
                             </span>
                         </div>
 
+                        <div class="d-flex align-items-center bg-light rounded-pill px-2 me-2 border shadow-sm" style="height: 38px;">
+                            {% if not lista.esta_finalizada %}
+                                <a href="{% url 'cambiar_cantidad' item.id 'restar' %}" class="btn btn-sm text-primary p-0 px-1">
+                                    <i class="bi bi-dash-circle-fill fs-5"></i>
+                                </a>
+                            {% endif %}
+                            
+                            <span class="mx-2 fw-bold text-dark" style="min-width: 20px; font-size: 0.9rem;">
+                                {{ item.cantidad }}
+                            </span>
+
+                            {% if not lista.esta_finalizada %}
+                                <a href="{% url 'cambiar_cantidad' item.id 'sumar' %}" class="btn btn-sm text-primary p-0 px-1">
+                                    <i class="bi bi-plus-circle-fill fs-5"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+
                         {% if not lista.esta_finalizada %}
-                            <a href="{% url 'eliminar_item' item.id %}" class="btn-action-delete ms-2 text-decoration-none">
+                            <a href="{% url 'eliminar_item' item.id %}" class="btn-action-delete ms-1 text-decoration-none">
                                 <i class="bi bi-x-lg"></i>
                             </a>
                         {% endif %}
@@ -127,7 +145,6 @@
                 </button>
             </div>
         {% endif %}
-
     </div>
 </div>
 

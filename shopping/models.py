@@ -28,6 +28,7 @@ class ListaCompra(models.Model):
     tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     esta_finalizada = models.BooleanField(default=False)
+    fecha_finalizada = models.DateTimeField(null=True, blank=True)
     total_ticket = models.DecimalField(max_digits=7, decimal_places=2, default=0.00)
 
     def __str__(self):
@@ -37,7 +38,7 @@ class ItemLista(models.Model):
     """ Los productos específicos dentro de una lista concreta """
     lista = models.ForeignKey(ListaCompra, related_name='items', on_delete=models.CASCADE)
     producto_maestro = models.ForeignKey(MaestroProducto, on_delete=models.CASCADE)
-    cantidad = models.CharField(max_length=50, default="1") # Ej: '2 packs', '1kg'
+    cantidad = models.PositiveIntegerField(default=1) # Ej: '2 packs', '1kg'
     comprado = models.BooleanField(default=False)
 
     def __str__(self):

@@ -15,31 +15,56 @@
         </div>
 
         <section class="section-gap">
-            <div class="card card-stats-hero border-0 shadow-lg text-white">
+            <div class="card card-stats-hero border-0 shadow-lg text-white" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);">
                 <div class="card-body py-5">
-                    <p class="mb-1 opacity-75 fw-bold text-uppercase label-stats">Gasto mensual</p>
+                    <p class="mb-1 opacity-75 fw-bold text-uppercase label-stats" style="letter-spacing: 2px; font-size: 0.75rem;">Gasto en {{ mes_nombre }}</p>
                     <h1 class="display-3 fw-bold mb-2">{{ gasto_mes|stringformat:".2f" }}€</h1>
-                    <div class="divider-stats my-3"></div>
-                    <p class="mb-0 opacity-75 fw-semibold">Total acumulado: {{ gasto_total|stringformat:".2f" }}€</p>
+                    <div class="divider-stats my-3" style="height: 2px; background: rgba(255,255,255,0.2); width: 50%; margin: 0 auto;"></div>
+                    <p class="mb-0 opacity-75 fw-semibold">Control de gastos mensual</p>
                 </div>
             </div>
         </section>
 
         <section class="section-gap">
-            <h5 class="fw-bold mb-4 text-uppercase label-spacing text-secondary-custom">Productos más comprados</h5>
+            <h5 class="fw-bold mb-4 text-uppercase label-spacing text-secondary-custom" style="font-size: 0.8rem; letter-spacing: 1.5px;">Evolución Histórica</h5>
+            <div class="card border-0 shadow-sm overflow-hidden card-rounded">
+                <div class="list-group list-group-flush">
+                    {% for registro in historial_meses %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center py-3 px-4">
+                        <div class="text-start">
+                            <span class="fw-bold text-dark text-capitalize">{{ registro.mes|date:"F Y" }}</span>
+                        </div>
+                        <span class="badge bg-light text-primary border rounded-pill px-3 py-2 fw-bold">
+                            {{ registro.total|stringformat:".2f" }} €
+                        </span>
+                    </div>
+                    {% empty %}
+                    <div class="py-4">
+                        <p class="text-muted mb-0 small">No hay meses finalizados todavía</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <section class="section-gap">
+            <h5 class="fw-bold mb-4 text-uppercase label-spacing text-secondary-custom" style="font-size: 0.8rem; letter-spacing: 1.5px;">Productos más comprados</h5>
             <div class="card border-0 shadow-sm overflow-hidden card-rounded">
                 <div class="list-group list-group-flush">
                     {% for prod in top_productos %}
                     <div class="list-group-item d-flex justify-content-between align-items-center py-3 border-light px-4">
-                        <span class="fw-bold text-dark">{{ prod.nombre }}</span>
+                        <div class="text-start">
+                            <span class="fw-bold text-dark d-block">{{ prod.nombre }}</span>
+                            <small class="text-muted text-uppercase" style="font-size: 0.6rem;">{{ prod.zona }}</small>
+                        </div>
                         <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">
-                            {{ prod.frecuencia_uso }} unidades
+                            {{ prod.frecuencia_uso }} usos
                         </span>
                     </div>
                     {% empty %}
                     <div class="py-5">
                         <i class="bi bi-graph-up text-muted opacity-25 fs-1 d-block mb-2"></i>
-                        <p class="text-muted mb-0 small">No hay datos de productos registrados</p>
+                        <p class="text-muted mb-0 small">No hay datos de productos</p>
                     </div>
                     {% endfor %}
                 </div>
@@ -47,16 +72,16 @@
         </section>
 
         <section class="section-gap mb-5">
-            <h5 class="fw-bold mb-4 text-uppercase label-spacing text-secondary-custom">Gasto por establecimiento</h5>
-            <div class="row g-4">
+            <h5 class="fw-bold mb-4 text-uppercase label-spacing text-secondary-custom" style="font-size: 0.8rem; letter-spacing: 1.5px;">Gasto por establecimiento</h5>
+            <div class="row g-3">
                 {% for t in tiendas_stats %}
                 <div class="col-6">
-                    <div class="card card-store-stat border-0 shadow-sm p-4 h-100" 
-                         style="border-top: 5px solid {{ t.color_hex }} !important;">
-                        <h6 class="fw-bold mb-2 text-dark text-truncate">{{ t.nombre }}</h6>
-                        <h4 class="text-primary fw-bold mb-1">{{ t.total_gastado|default:0|stringformat:".2f" }}€</h4>
+                    <div class="card border-0 shadow-sm p-3 h-100" 
+                         style="border-top: 4px solid {{ t.color_hex }} !important; border-radius: 15px;">
+                        <h6 class="fw-bold mb-1 text-dark text-truncate" style="font-size: 0.85rem;">{{ t.nombre }}</h6>
+                        <h4 class="text-primary fw-bold mb-1" style="font-size: 1.2rem;">{{ t.total_gastado|default:0|stringformat:".2f" }}€</h4>
                         <div class="mt-2 pt-2 border-top border-light">
-                            <small class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem;">
+                            <small class="text-muted fw-bold text-uppercase" style="font-size: 0.6rem;">
                                 {{ t.num_visitas }} visitas
                             </small>
                         </div>

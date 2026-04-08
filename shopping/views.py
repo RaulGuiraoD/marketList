@@ -3,6 +3,7 @@ from django.db import models, IntegrityError
 from django.db.models import Sum, Count, Q
 from django.utils import timezone
 from .models import Tienda, ListaCompra, MaestroProducto, ItemLista
+from django.db.models.functions import TruncMonth
 
 def dashboard(request):
     listas_abiertas = ListaCompra.objects.filter(esta_finalizada=False).order_by('-fecha_creacion')
@@ -63,44 +64,41 @@ def editar_tienda(request, tienda_id):
     return redirect('gestionar_tiendas') # Siempre vuelve a la lista de gestión
 
 
+def cambiar_cantidad(request, item_id, operacion):
+    item = get_object_or_404(ItemLista, id=item_id)
+    if operacion == 'sumar':
+        item.cantidad += 1
+    elif operacion == 'restar' and item.cantidad > 1:
+        item.cantidad -= 1
+    item.save()
+    return redirect('ver_lista', lista_id=item.lista.id)
+
+# En tu ver_lista actual, asegúrate de que el POST maneje enteros
 def ver_lista(request, lista_id):
     lista = get_object_or_404(ListaCompra, id=lista_id)
-    
     if request.method == 'POST':
         nombre_prod = request.POST.get('nombre').strip().capitalize()
-        # Nota: asegúrate de que 'cantidad' esté en tu HTML o usa 1 por defecto
-        cantidad = request.POST.get('cantidad', '1')
-
+        # Si no viene cantidad o es texto, forzamos 1
+        cantidad = request.POST.get('cantidad', 1)
+        
         if nombre_prod:
-            # 1. Buscar o crear en el Maestro
-            producto_maestro, created = MaestroProducto.objects.get_or_create(
+            producto_maestro, _ = MaestroProducto.objects.get_or_create(
                 nombre=nombre_prod,
                 defaults={'tienda_habitual': lista.tienda}
             )
-            
-            # Si ya existía, podrías aumentar su frecuencia_uso aquí si tienes ese campo
-            # producto_maestro.frecuencia_uso += 1
-            # producto_maestro.save()
-            
-            # 2. Añadirlo a la lista actual (ItemLista)
             ItemLista.objects.create(
                 lista=lista,
                 producto_maestro=producto_maestro,
-                cantidad=cantidad
+                cantidad=int(cantidad) # Aseguramos entero
             )
         return redirect('ver_lista', lista_id=lista.id)
-
-    # Obtenemos los items de esta lista (usamos 'productos' para el HTML)
-    productos_en_lista = lista.items.all().order_by('comprado', 'producto_maestro__zona', 'producto_maestro__nombre')
     
-    # Obtenemos los 10 productos más frecuentes para las sugerencias
-    # Si no tienes el campo frecuencia_uso, usa .all()[:10] por ahora
-    sugerencias = MaestroProducto.objects.filter(frecuencia_uso__gt=0).order_by('-frecuencia_uso')[:10]
-
+    # ... resto de la lógica de la vista (mantenla igual) ...
+    items = lista.items.all().order_by('comprado', 'producto_maestro__zona')
     return render(request, 'shopping/lista_detalle.html', {
         'lista': lista,
-        'items': productos_en_lista, 
-        'sugerencias': sugerencias
+        'items': items,
+        'sugerencias': MaestroProducto.objects.filter(frecuencia_uso__gt=0)[:10]
     })
 
 def completar_item(request, item_id):
@@ -133,6 +131,7 @@ def finalizar_compra(request, lista_id):
                 lista.total_ticket = 0
             
         lista.esta_finalizada = True
+        lista.fecha_finalizada = timezone.now()
         lista.save()
         
         # Aumentar frecuencia de los productos comprados
@@ -159,30 +158,38 @@ def reabrir_lista(request, lista_id):
     return redirect('ver_lista', lista_id=lista.id)
 
 def estadisticas(request):
-    # 1. Gasto Total Histórico
-    gasto_total = ListaCompra.objects.filter(esta_finalizada=True).aggregate(Sum('total_ticket'))['total_ticket__sum'] or 0
-
-    # 2. Gasto este mes
-    mes_actual = timezone.now().month
+    ahora = timezone.now()
+    
+    # 1. Gasto Mes Actual (Filtrando por mes Y año)
     gasto_mes = ListaCompra.objects.filter(
         esta_finalizada=True, 
-        fecha_creacion__month=mes_actual
+        fecha_finalizada__month=ahora.month,
+        fecha_finalizada__year=ahora.year
     ).aggregate(Sum('total_ticket'))['total_ticket__sum'] or 0
 
-    # 3. Top Productos (Los 5 más frecuentes)
-    top_productos = MaestroProducto.objects.filter(frecuencia_uso__gt=0).order_by('-frecuencia_uso')[:5]
+    # 2. HISTORIAL MENSUAL (Agrupado)
+    # Esto genera una lista de diccionarios con el gasto de cada mes
+    historial_meses = (
+        ListaCompra.objects.filter(esta_finalizada=True)
+        .annotate(mes=TruncMonth('fecha_finalizada'))
+        .values('mes')
+        .annotate(total=Sum('total_ticket'))
+        .order_by('-mes')
+    )
 
-    # 4. Gasto por Tienda (Cambiado 'listas' por 'listacompra')
+    # 3. Top Productos y Tiendas (Mantén tu lógica que está muy bien)
+    top_productos = MaestroProducto.objects.filter(frecuencia_uso__gt=0).order_by('-frecuencia_uso')[:5]
     tiendas_stats = Tienda.objects.annotate(
         total_gastado=Sum('listacompra__total_ticket', filter=Q(listacompra__esta_finalizada=True)),
         num_visitas=Count('listacompra', filter=Q(listacompra__esta_finalizada=True))
     ).filter(num_visitas__gt=0).order_by('-total_gastado')
 
     context = {
-        'gasto_total': gasto_total,
         'gasto_mes': gasto_mes,
+        'historial_meses': historial_meses,
         'top_productos': top_productos,
         'tiendas_stats': tiendas_stats,
+        'mes_nombre': ahora.strftime('%B') # Para mostrar "Abril" en el título
     }
     return render(request, 'shopping/estadisticas.html', context)
 
