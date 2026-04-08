@@ -123,30 +123,50 @@ def ver_lista(request, lista_id):
 
         return redirect('ver_lista', lista_id=lista.id)
     
-    # Ordenación de la lista para el renderizado
-    items = lista.items.all().order_by(
-        'comprado', 
-        'producto_maestro__zona', 
-        'producto_maestro__nombre'
-    )
+    orden = request.GET.get('orden', 'recientes')
+    
+    if orden == 'secciones':
+        # Orden por zonas (el que teníamos antes)
+        criterio = ['comprado', 'producto_maestro__zona', 'producto_maestro__nombre']
+    elif orden == 'cantidad':
+        criterio = ['comprado', '-cantidad', 'producto_maestro__nombre']
+    elif orden == 'antiguos':
+        criterio = ['comprado', 'creado_en']
+    else: # 'recientes'
+        criterio = ['comprado', '-creado_en']
+
+    items = lista.items.all().order_by(*criterio)
     
     return render(request, 'shopping/lista_detalle.html', {
         'lista': lista,
         'items': items,
-        'sugerencias': MaestroProducto.objects.filter(frecuencia_uso__gt=0).order_by('-frecuencia_uso')[:10]
+        'sugerencias': MaestroProducto.objects.all().order_by('-frecuencia_uso')[:12],
+        'orden_actual': orden # Para saber qué botón marcar como activo
     })
 
 def completar_item(request, item_id):
     item = get_object_or_404(ItemLista, id=item_id)
     item.comprado = not item.comprado
     item.save()
-    return redirect('ver_lista', lista_id=item.lista.id)
+    
+    # Leemos el orden de la URL actual
+    orden = request.GET.get('orden', 'recientes')
+    
+    # Redirigimos manteniendo ese orden
+    response = redirect('ver_lista', lista_id=item.lista.id)
+    response['Location'] += f'?orden={orden}'
+    return response
 
 def eliminar_item(request, item_id):
     item = get_object_or_404(ItemLista, id=item_id)
     lista_id = item.lista.id
     item.delete()
-    return redirect('ver_lista', lista_id=lista_id)
+    
+    orden = request.GET.get('orden', 'recientes')
+    
+    response = redirect('ver_lista', lista_id=lista_id)
+    response['Location'] += f'?orden={orden}'
+    return response
 
 def finalizar_compra(request, lista_id):
     lista = get_object_or_404(ListaCompra, id=lista_id)
@@ -164,7 +184,7 @@ def finalizar_compra(request, lista_id):
             except ValueError:
                 # Si mete texto raro por error, lo reseteamos a 0
                 lista.total_ticket = 0
-                
+
         lista.items.all().update(comprado=True)
         lista.esta_finalizada = True
         lista.fecha_finalizada = timezone.now()
@@ -253,55 +273,77 @@ def eliminar_producto_maestro(request, producto_id):
     producto.delete()
     return redirect('gestionar_maestro')
 
-def categorizar_mercadona(nombre):
-    nombre = nombre.lower()
+def categorizar_mercadona(nombre_prod):
+    nombre = nombre_prod.lower()
     
-    # Usamos "raíces" de palabras para captar plurales y diminutivos
     categorias = {
+        'Congelados': [
+            'congelad', 'conge', 'hielo', 'helad', 'sorbet', 'nugget', 
+            'varit', 'croquet', 'lasaña', 'canelon', 'salteado', 'guisante',
+            'verdur congelad', 'arroz congelado', 'pizz'
+        ],
+        'Salsas': [
+            'mayones', 'ketchup', 'mostaz', 'brava', 'soja', 'gajo', 'alioli',
+            'salsa', 'tabasco', 'teriyaki', 'pesto', 'bolognesa', 'carbonara',
+            'vinagreta', 'barbacoa', 'bbq', 'roquefort'
+        ],
+        'Aperitivos': [
+            'patat bolsa', 'patatas bolsa', 'papas', 'snack', 'fruto seco', 'almendr', 
+            'avellan', 'nueces', 'pistacho', 'pipas', 'palomit', 'nachos', 
+            'tortillita', 'cortez', 'cacahuete', 'anacard', 'picos', 'regaña'
+        ],
+        'Pescadería': [
+            'merluz', 'bacala', 'gamba', 'langostin', 'mejillon', 'pulpo', 
+            'sepia', 'calamar', 'dorad', 'lubin', 'emperador', 'almej', 'gula', 'salmon'
+        ],
+        'Despensa y Latas': [
+            # Ahora atún caen aquí por defecto
+            'atun', 'lata', 'conserva', 'bote', 'frasco', 'arroz', 
+            'vasito', 'tarrina', 'pasta', 'macarr', 'espague', 'fideo', 'harin', 
+            'aceit', 'vinagr', 'sal', 'azucar', 'legumbr', 'lentej', 'garbanz', 
+            'alubi', 'cald', 'especi', 'frit', 'maiz', 'miel', 'tomate frito'
+        ],
+        'Lácteos y Frío': [
+            'yogur', 'cuajad', 'mantequill', 'kefir', 'leche', 'batid', 'nat', 
+            'hummu', 'guacamol', 'gelatin', 'postr', 'mozzarel', 'flan',
+            'masa', 'hojaldre', 'quebrada', 'base pizza', 'bebible', 'natillas',
+            'salmorejo', 'gazpacho'
+        ],
         'Frutería y Verdura': [
             'patat', 'ceboll', 'ajo', 'lechug', 'tomat', 'platan', 'manzan', 'per', 
-            'frut', 'verdur', 'boniat', 'aguacat', 'limon', 'naranj', 'fres', 
-            'pimiento', 'calabaci', 'zanahori', 'seta', 'champi', 'uvas', 'piña'
+            'frut', 'verdur', 'aguacat', 'limon', 'naranj', 'fres', 'uvas',
+            'pimiento', 'calabaci', 'zanahori', 'seta', 'champi', 'piña', 'kiwi'
         ],
         'Carnicería/Charcutería': [
             'poll', 'terner', 'cerd', 'pav', 'jamon', 'lomo', 'embuti', 'chori', 
-            'salchich', 'morta', 'filet', 'hamburg', 'alit', 'carn', 'serra', 
-            'cocid', 'bacon', 'fuet', 'pancet', 'ques' # El queso suele estar cerca
-        ],
-        'Lácteos y Frío': [
-            'lech', 'yogur', 'cuajad', 'mantequill', 'kefir', 'batid', 'nat', 
-            'hummu', 'guacamol', 'gelatin', 'postr', 'bifidu', 'mozzarel', 'flan'
-        ],
-        'Congelados': [
-            'hielo', 'pizz', 'helad', 'nugget', 'croquet', 'varit', 'congelad', 'sorbet'
+            'salchich', 'morta', 'filet', 'hamburg', 'alit', 'carn', 'bacon', 
+            'fuet', 'pancet', 'ques', 'pate', 'sobrasad', 'pechug'
         ],
         'Panadería y Dulces': [
             'pan', 'barr', 'hogaz', 'mold', 'croiss', 'napolitan', 'gallet', 
-            'bizcoch', 'magdalen', 'donut', 'tortit', 'pico', 'regaña', 'chocolat'
-        ],
-        'Despensa y Latas': [
-            'arroz', 'past', 'macarr', 'espague', 'fideo', 'harin', 'aceit', 
-            'vinagr', 'sal', 'azucar', 'legumbr', 'lentej', 'garbanz', 'alubi', 
-            'cald', 'especi', 'bot', 'conserv', 'atun', 'frit', 'maiz', 'miel'
+            'bizcoch', 'magdalen', 'donut', 'tortit', 'chocolat', 'bombon', 
+            'caramel', 'gominol', 'tarta', 'pastel', 'sobao'
         ],
         'Bebidas y Bodega': [
             'agu', 'refresc', 'col', 'fant', 'cervez', 'vin', 'zum', 'energet', 
-            'isoton', 'tint', 'sidr', 'caser', 'tónica'
+            'isoton', 'tint', 'sidr', 'caser', 'tonica'
         ],
-        'Limpieza e Higiene': [
+        'Limpieza': [
             'detergent', 'suaviz', 'lavavajill', 'lejia', 'fregasuel', 'limpia', 
-            'estropaj', 'bayet', 'papel', 'higieni', 'cocin', 'servillet', 
-            'champú', 'gel', 'desodor', 'dient', 'cepill', 'maquinill', 'pañal', 
-            'compres', 'toallit', 'jabon', 'suavi'
+            'estropaj', 'bayet', 'fregona', 'escoba', 'bolsa basura', 'aluminio'
+        ],
+        'Higiene y Cuidado': [
+            'papel', 'higieni', 'cocin', 'servillet', 'champu', 'gel', 'desodor', 
+            'dient', 'cepill', 'maquinill', 'jabon', 'crema', 'colonia'
         ],
         'Mascotas': [
             'perr', 'gat', 'pienso', 'mascot', 'aren', 'latit'
         ],
     }
 
-    # Comprobamos si la RAÍZ está dentro del NOMBRE
-    for zona, raices in categorias.items():
-        if any(raiz in nombre for raiz in raices):
-            return zona
-            
-    return "General"
+    for categoria, palabras in categorias.items():
+        for palabra in palabras:
+            if palabra in nombre:
+                return categoria
+                
+    return 'General'

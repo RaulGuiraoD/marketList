@@ -40,6 +40,7 @@ class ItemLista(models.Model):
     producto_maestro = models.ForeignKey(MaestroProducto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1) # Ej: '2 packs', '1kg'
     comprado = models.BooleanField(default=False)
+    creado_en = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.producto_maestro.nombre} en {self.lista}"

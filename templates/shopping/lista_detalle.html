@@ -31,7 +31,7 @@
             </section>
         {% else %}
             <section class="mb-4">
-                <form method="POST" id="formAdd">
+                <form method="POST" id="formAdd" action="?orden={{ orden_actual }}">
                     {% csrf_token %}
                     <div class="input-group shadow-sm border-0 input-group-rounded mb-2">
                         <input type="text" name="nombre" id="inputProducto" 
@@ -70,21 +70,55 @@
         {% endif %}
 
         <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+                <small class="text-muted fw-bold text-uppercase" style="font-size: 0.6rem; letter-spacing: 1px;">
+                    {{ items.count }} PRODUCTOS
+                </small>
+                
+                <div class="dropdown">
+                    <button class="btn btn-light btn-sm rounded-pill shadow-sm px-3 border-0 text-uppercase fw-bold" 
+                            type="button" data-bs-toggle="dropdown" style="font-size: 0.65rem; color: #666;">
+                        <i class="bi bi-sort-down me-1 text-primary"></i> 
+                        {% if orden_actual == 'secciones' %}Por Zonas
+                        {% elif orden_actual == 'cantidad' %}Por Cantidad
+                        {% else %}Recientes{% endif %}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 card-rounded p-2" style="border-radius: 15px;">
+                        <li><a class="dropdown-item small rounded-3 py-2" href="?orden=recientes">
+                            <i class="bi bi-clock-history me-2"></i>Recientes (Modo Casa)
+                        </a></li>
+                        <li><a class="dropdown-item small rounded-3 py-2" href="?orden=secciones">
+                            <i class="bi bi-grid-3x3-gap me-2"></i>Por Zonas (Modo Súper)
+                        </a></li>
+                        <li><a class="dropdown-item small rounded-3 py-2" href="?orden=cantidad">
+                            <i class="bi bi-123 me-2"></i>Por Cantidad
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+
             <div class="list-group list-group-flush"> 
                 {% for item in items %}
                     
-                    {# ESPACIADOR VISUAL ENTRE ZONAS (Sin texto redundante) #}
-                    {% ifchanged item.producto_maestro.zona %}
-                        {% if not forloop.first %}
-                            <div class="py-2"><hr class="my-1 opacity-25"></div>
-                        {% endif %}
-                    {% endifchanged %}
+                    {# SOLO MOSTRAR SEPARADOR SI EL ORDEN ES POR SECCIONES #}
+                    {% if orden_actual == 'secciones' %}
+                        {% ifchanged item.producto_maestro.zona %}
+                            {% if not forloop.first %}
+                                <div class="py-2"><hr class="my-1 opacity-25"></div>
+                            {% endif %}
+                            <div class="text-start ps-2 mb-2">
+                                <span class="badge bg-light text-primary text-uppercase" style="font-size: 0.55rem; letter-spacing: 0.5px;">
+                                    {{ item.producto_maestro.zona }}
+                                </span>
+                            </div>
+                        {% endifchanged %}
+                    {% endif %}
 
                     <div class="list-group-item d-flex align-items-center border-0 shadow-sm item-producto-lista {% if item.comprado %}item-muted{% endif %} mb-1 py-2 px-3" style="border-radius: 15px;">
-                        
                         <div class="me-3">
                             {% if not lista.esta_finalizada %}
-                                <a href="{% url 'completar_item' item.id %}" class="btn-action-check {% if item.comprado %}btn-checked{% else %}btn-outline-check{% endif %} text-decoration-none">
+                                <a href="{% url 'completar_item' item.id %}?orden={{ orden_actual }}" 
+                                class="btn-action-check {% if item.comprado %}btn-checked{% else %}btn-outline-check{% endif %} text-decoration-none">
                                     <i class="bi {% if item.comprado %}bi-check-lg{% else %}bi-circle{% endif %}"></i>
                                 </a>
                             {% else %}
@@ -98,9 +132,12 @@
                             <span class="fw-semibold d-block {% if item.comprado %}text-decoration-line-through opacity-50 text-muted{% endif %}" style="font-size: 0.95rem; line-height: 1.1;">
                                 {{ item.producto_maestro.nombre }}
                             </span>
-                            <small class="text-uppercase fw-bold text-primary" style="font-size: 0.55rem; letter-spacing: 0.5px; opacity: 0.8;">
-                                {{ item.producto_maestro.zona }}
-                            </small>
+                            {# Solo mostramos la zona debajo del nombre si NO estamos ordenando por zonas (para no repetir) #}
+                            {% if orden_actual != 'secciones' %}
+                                <small class="text-uppercase fw-bold text-primary" style="font-size: 0.55rem; letter-spacing: 0.5px; opacity: 0.8;">
+                                    {{ item.producto_maestro.zona }}
+                                </small>
+                            {% endif %}
                         </div>
 
                         <div class="d-flex align-items-center bg-light rounded-pill px-2 me-2 border shadow-sm" style="height: 32px;">
@@ -124,7 +161,8 @@
                         </div>
 
                         {% if not lista.esta_finalizada %}
-                            <a href="{% url 'eliminar_item' item.id %}" class="btn-action-delete ms-1 text-decoration-none">
+                            <a href="{% url 'eliminar_item' item.id %}?orden={{ orden_actual }}" 
+                            class="btn-action-delete ms-1 text-decoration-none">
                                 <i class="bi bi-x-lg" style="font-size: 0.8rem;"></i>
                             </a>
                         {% endif %}
