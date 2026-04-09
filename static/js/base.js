@@ -239,4 +239,21 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+   /* ANIMACION BARRA ESTADISTICAS */
+    const bar = document.getElementById('budget-bar');
+    
+    if (bar) {
+        // 1. Capturamos el porcentaje y limpiamos posibles comas de Django
+        let pct = bar.getAttribute('data-percentage').replace(',', '.');
+        
+        // 2. Forzamos estado inicial (0%)
+        bar.style.setProperty('width', '0%', 'important');
+
+        // 3. Pequeño delay de cortesía para que el usuario vea la animación al entrar
+        setTimeout(() => {
+            bar.style.setProperty('width', pct + '%', 'important');
+        }, 300);
+    }
+
 });

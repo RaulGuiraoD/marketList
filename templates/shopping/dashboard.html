@@ -34,11 +34,18 @@
                     style="max-height: 120px; width: auto;">
             </div>
 
-            <h1 class="display-5 fw-bold" style="color: var(--primary-green);">
-                Swift<span style="color: var(--text-dark);">List</span>
-            </h1>
-            
-            <p class="text-muted fst-italic">Tu compra, más fácil que nunca</p>
+            <div class="px-4 mb-3">
+                <h4 class="fw-bold mb-0">
+                    ¡Hola, {{ user.perfilusuario.nombre_completo|default:user.username }}!
+                </h4>
+                <p class="text-muted small">
+                    {% if gasto_mes_dash > 0 %}
+                        Este mes llevas gastados <strong>{{ gasto_mes_dash|stringformat:".2f" }}€</strong>.
+                    {% else %}
+                        ¿Listo para llenar la despensa hoy?
+                    {% endif %}
+                </p>
+            </div>
         </header>
 
         <div class="card card-dashboard-main border-0 shadow-sm mb-5">

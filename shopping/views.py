@@ -29,7 +29,11 @@ def perfil(request):
         perfil.nombre_completo = request.POST.get('nombre')
         perfil.apellidos = request.POST.get('apellidos')
         perfil.sexo = request.POST.get('sexo')
-        perfil.presupuesto_mensual = request.POST.get('presupuesto') or None
+
+        nuevo_presupuesto = request.POST.get('presupuesto')
+        if nuevo_presupuesto:
+            perfil.presupuesto_mensual = nuevo_presupuesto.replace(',', '.')
+            
         perfil.avatar_icon = request.POST.get('avatar_icon', perfil.avatar_icon)
         perfil.save()
         
@@ -227,28 +231,33 @@ def finalizar_compra(request, lista_id):
     lista = get_object_or_404(ListaCompra, id=lista_id, usuario=request.user)
     
     if request.method == 'POST':
+        estaba_finalizada_antes = lista.esta_finalizada
+        
         total_raw = request.POST.get('total_ticket', '').strip()
-        # Si el campo viene vacío, ponemos 0.00
+        
         if not total_raw:
             lista.total_ticket = 0
         else:
             try:
-                # Convertimos a float/decimal para asegurar que es un número
                 lista.total_ticket = float(total_raw.replace(',', '.'))
             except ValueError:
-                # Si mete texto raro por error, lo reseteamos a 0
                 lista.total_ticket = 0
 
         lista.items.all().update(comprado=True)
         lista.esta_finalizada = True
-        lista.fecha_finalizada = timezone.now()
+        
+        # --- LÓGICA DE FECHA INAMOVIBLE ---
+        if not lista.fecha_finalizada:
+            lista.fecha_finalizada = timezone.now()
+        
         lista.save()
         
-        # Aumentar frecuencia de los productos comprados
-        for item in lista.items.filter(comprado=True):
-            producto = item.producto_maestro
-            producto.frecuencia_uso += 1
-            producto.save()
+        # --- FRECUENCIA ---
+        if not estaba_finalizada_antes:
+            for item in lista.items.filter(comprado=True):
+                producto = item.producto_maestro
+                producto.frecuencia_uso += 1
+                producto.save()
             
         return redirect('dashboard')
     
@@ -271,6 +280,7 @@ def reabrir_lista(request, lista_id):
 @login_required
 def estadisticas(request):
     ahora = timezone.now()
+    perfil = request.user.perfilusuario
     
     listas_usuario = ListaCompra.objects.filter(usuario=request.user, esta_finalizada=True)
 
@@ -279,6 +289,25 @@ def estadisticas(request):
         fecha_finalizada__month=ahora.month,
         fecha_finalizada__year=ahora.year
     ).aggregate(Sum('total_ticket'))['total_ticket__sum'] or 0
+
+    # --- NUEVA LÓGICA DE PRESUPUESTO ---
+    presupuesto = perfil.presupuesto_mensual or 0
+    porcentaje_consumido = 0
+    restante = 0
+    excedente = 0
+
+    if presupuesto > 0:
+        gasto_float = float(gasto_mes)
+        ppto_float = float(presupuesto)
+        porcentaje_consumido = (gasto_float / ppto_float) * 100
+        
+        if gasto_float > ppto_float:
+            excedente = gasto_float - ppto_float  # Lo que se ha pasado
+            restante = 0
+        else:
+            restante = ppto_float - gasto_float   # Lo que le queda
+            excedente = 0
+    # ----------------------------------
 
     # 2. HISTORIAL MENSUAL (Filtrado por usuario)
     historial_meses = (
@@ -304,10 +333,15 @@ def estadisticas(request):
 
     context = {
         'gasto_mes': gasto_mes,
+        'presupuesto': presupuesto,
+        'porcentaje': min(porcentaje_consumido, 100), # Para que la barra no se salga del 100%
+        'restante': restante,
+        'excedente': excedente,
         'historial_meses': historial_meses,
         'top_productos': top_productos,
         'tiendas_stats': tiendas_stats,
-        'mes_nombre': ahora.strftime('%B')
+        'mes_nombre': ahora.strftime('%B'),
+        'perfil': perfil,
     }
     return render(request, 'shopping/estadisticas.html', context)
 

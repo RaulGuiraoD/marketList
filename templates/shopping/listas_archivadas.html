@@ -68,10 +68,11 @@
                                     <a href="{% url 'ver_lista' lista.id %}" class="btn btn-sm btn-action-historial btn-view-historial">
                                         VER
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-action-historial btn-reopen-historial w-100" 
-                                            onclick="event.stopPropagation(); showReopenModal('{{ lista.id }}')">
-                                        REABRIR
-                                    </button>
+                                    <a href="{% url 'reabrir_lista' lista.id %}" 
+                                    class="btn btn-sm btn-action-historial btn-reopen-historial w-100 d-flex align-items-center justify-content-center"
+                                    style="text-decoration: none;">
+                                    REABRIR
+                                    </a>
                                 </div>
                             </div>
                         </div>

@@ -5,7 +5,7 @@
     --text-dark: #2c2c2c;
     --text-muted: #7a7a7a;
     --card-border: #f0eee4;
-    --danger-red: #ff4d4d;
+    --danger-red: #de1818;
 }
 
 body {
@@ -516,4 +516,28 @@ body {
 .producto-checkbox {
     pointer-events: auto;
     /* Permite clics directos en el check */
+}
+
+/* Solo el diseño y el brillo de la barra */
+#budget-bar {
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+    position: relative;
+    overflow: hidden;
+    /* Forzamos la transición aquí */
+    transition: width 1.5s ease-in-out !important; 
+}
+
+/* El brillo (esto debería funcionar siempre) */
+#budget-bar::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(90deg, transparent, var(--danger-red), transparent);
+    animation: shine-bar 2s infinite;
+}
+
+@keyframes shine-bar {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
