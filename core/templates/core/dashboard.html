@@ -9,15 +9,18 @@
 
        <div class="d-flex justify-content-between align-items-center mt-4 mb-2 px-2">
             <a href="{% url 'perfil' %}" class="btn btn-light border rounded-pill d-flex align-items-center p-1 pe-3 shadow-sm">
-                <div class="bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 1.2rem;">
-                    <span>{{ user.perfilusuario.avatar_icon|default:"👤" }}</span>
+                <div class="bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 1rem;">
+                    {% if user.perfilusuario.avatar_icon %}
+                        <span>{{ user.perfilusuario.avatar_icon }}</span>
+                    {% else %}
+                        <i class="fa-solid fa-user text-primary"></i>
+                    {% endif %}
                 </div>
                 <span class="fw-bold text-dark small text-uppercase" style="letter-spacing: 1px;">
                     {{ user.perfilusuario.nombre_completo|default:user.username }}
                 </span>
             </a>
                         
-            
             <button type="button" 
                     class="btn btn-sm btn-danger-custom border-0 rounded-pill fw-bold py-2 fw-bold shadow-sm bg-red"
                     data-bs-toggle="modal" 
@@ -120,39 +123,6 @@
             {% endfor %}
         </div>
 
-        <div class="mt-5">
-            <a href="{% url 'estadisticas' %}" class="btn btn-stats-dash w-100 py-3 shadow-sm fw-bold border-0 mb-3">
-                <i class="bi bi-graph-up-arrow me-2 text-primary"></i> VER MIS ESTADÍSTICAS
-            </a>
-            
-            <div class="row g-2 text-center">
-                <div class="col-4">
-                    <a href="{% url 'listas_archivadas' %}" class="text-decoration-none">
-                        <div class="p-3 bg-white shadow-sm rounded-4 mb-1">
-                            <i class="bi bi-calendar-check fs-4 text-primary"></i>
-                        </div>
-                        <small class="text-muted fw-bold small-caps">HISTORIAL</small>
-                    </a>
-                </div>
-                <div class="col-4">
-                    <a href="{% url 'gestionar_tiendas' %}" class="text-decoration-none">
-                        <div class="p-3 bg-white shadow-sm rounded-4 mb-1">
-                            <i class="bi bi-shop fs-4 text-primary"></i>
-                        </div>
-                        <small class="text-muted fw-bold small-caps">TIENDAS</small>
-                    </a>
-                </div>
-                <div class="col-4">
-                    <a href="{% url 'gestionar_maestro' %}" class="text-decoration-none">
-                        <div class="p-3 bg-white shadow-sm rounded-4 mb-1">
-                            <i class="bi bi-journal-text fs-4 text-primary"></i>
-                        </div>
-                        <small class="text-muted fw-bold small-caps">PRODUCTOS</small>
-                    </a>
-                </div>
-            </div>
-        </div>
-
         <p class="text-center mt-5 mb-5 opacity-50 footer-brand">
             <small class="fw-bold text-uppercase">swiftlist | Lista inteligente</small>
         </p>
@@ -193,7 +163,8 @@
 </div>
 
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm"> <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+    <div class="modal-dialog modal-dialog-centered modal-sm"> 
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
             <div class="modal-body text-center p-4">
                 <div class="text-danger mb-3" style="font-size: 2.5rem;">
                     <i class="bi bi-exclamation-circle-fill" style="color: var(--danger-red);"></i>

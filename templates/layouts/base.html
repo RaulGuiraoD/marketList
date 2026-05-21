@@ -9,6 +9,8 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +30,36 @@
         {% endblock %}
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="d-md-none fixed-bottom bg-white border-top shadow-lg" style="backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.94) !important; z-index: 1030;">
+        <div class="d-flex justify-content-around align-items-center py-2">
+            
+            <a href="{% url 'dashboard' %}" class="text-center text-decoration-none {% if request.resolver_match.url_name == 'dashboard' %}text-success fw-bold{% else %}text-muted{% endif %}" style="font-size: 0.7rem; width: 20%;">
+                <div class="fs-4 mb-1"><i class="fa-solid fa-house"></i></div>
+                <span>Inicio</span>
+            </a>
+
+            <a href="{% url 'listas_archivadas' %}" class="text-center text-decoration-none {% if request.resolver_match.url_name == 'listas_archivadas' %}text-success fw-bold{% else %}text-muted{% endif %}" style="font-size: 0.7rem; width: 20%;">
+                <div class="fs-4 mb-1"><i class="fa-solid fa-calendar-days"></i></div>
+                <span>Historial</span>
+            </a>
+
+            <a href="{% url 'gestionar_tiendas' %}" class="text-center text-decoration-none {% if request.resolver_match.url_name == 'gestionar_tiendas' %}text-success fw-bold{% else %}text-muted{% endif %}" style="font-size: 0.7rem; width: 20%;">
+                <div class="fs-4 mb-1"><i class="fa-solid fa-shop"></i></div>
+                <span>Tiendas</span>
+            </a>
+
+            <a href="{% url 'gestionar_maestro' %}" class="text-center text-decoration-none {% if request.resolver_match.url_name == 'gestionar_maestro' %}text-success fw-bold{% else %}text-muted{% endif %}" style="font-size: 0.7rem; width: 20%;">
+                <div class="fs-4 mb-1"><i class="fa-solid fa-rectangle-list"></i></div>
+                <span>Productos</span>
+            </a>
+
+            <a href="{% url 'estadisticas' %}" class="text-center text-decoration-none {% if request.resolver_match.url_name == 'estadisticas' %}text-success fw-bold{% else %}text-muted{% endif %}" style="font-size: 0.7rem; width: 20%;">
+                <div class="fs-4 mb-1"><i class="fa-solid fa-chart-line"></i></div>
+                <span>Stats</span>
+            </a>
+
+        </div>
+    </div>
 
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -41,8 +72,7 @@
                     <p class="text-muted small px-2" id="deleteConfirmMessage">Esta acción no se puede deshacer.</p>
 
                     <div class="d-grid gap-2 mt-4">
-                        <button type="button" id="btnConfirmDelete" class="btn btn-danger-custom">ELIMINAR
-                            AHORA</button>
+                        <button type="button" id="btnConfirmDelete" class="btn btn-danger-custom">ELIMINAR AHORA</button>
                         <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">CANCELAR</button>
                     </div>
                 </div>
@@ -54,35 +84,14 @@
         <div id="liveToast" class="toast align-items-center text-white border-0 shadow-lg" role="alert"
             aria-live="assertive" aria-atomic="true">
             <div class="d-flex justify-content-center">
-                <div class="toast-body fw-bold text-uppercase label-spacing" id="toastMessage"
-                    style="font-size: 0.75rem;">
+                <div class="toast-body fw-bold text-uppercase label-spacing" id="toastMessage" style="font-size: 0.75rem;">
                     Acción realizada correctamente
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        let formToSubmit = null;
-        function confirmDelete(event, element, message) {
-            event.preventDefault();
-            formToSubmit = element.closest('form');
-            document.getElementById('deleteConfirmMessage').innerText = message;
-            const myModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-            myModal.show();
-        }
-        document.getElementById('btnConfirmDelete').addEventListener('click', function () {
-            if (formToSubmit) {
-                // Opcional: Ocultar el modal justo antes de enviar para dar fluidez
-                bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
-                formToSubmit.submit();
-            }
-        });
-    </script>
-    <script src="{% static 'js/base.js' %}"></script>
-</body>
-
-{% if messages %}
+    {% if messages %}
         <div id="messages-container" class="position-fixed bottom-0 start-50 translate-middle-x mb-4" style="z-index: 1050;">
             {% for message in messages %}
                 <div class="toast show align-items-center text-white border-0 shadow-lg" role="alert" 
@@ -96,4 +105,38 @@
             {% endfor %}
         </div>
     {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let formToSubmit = null;
+        function confirmDelete(event, element, message) {
+            event.preventDefault();
+            formToSubmit = element.closest('form');
+            document.getElementById('deleteConfirmMessage').innerText = message;
+            const myModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+            myModal.show();
+        }
+        document.getElementById('btnConfirmDelete').addEventListener('click', function () {
+            if (formToSubmit) {
+                bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
+                formToSubmit.submit();
+            }
+        });
+    </script>
+    <script src="{% static 'js/base.js' %}"></script>
+
+    <style>
+        /* Agrega un padding inferior en dispositivos móviles para evitar que el contenido sea tapado por el menú */
+        @media (max-width: 767.98px) {
+            body {
+                padding-bottom: 80px !important;
+            }
+            /* Ajuste complementario para los contenedores de mensajes flotantes */
+            #messages-container, .toast-container {
+                bottom: 75px !important;
+            }
+        }
+    </style>
+</body>
 </html>
