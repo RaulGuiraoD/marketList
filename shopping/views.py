@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import IntegrityError
 from django.db.models import Sum, Count, Q
 from django.utils import timezone
-from .models import Tienda, ListaCompra, MaestroProducto, ItemLista, PerfilUsuario
+from .models import ListaCompra, ItemLista
 from django.db.models.functions import TruncMonth
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
