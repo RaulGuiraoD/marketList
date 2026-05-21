@@ -1,7 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,7 +8,6 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,10 +15,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    
+    <style>
+        /* Ajustes de interfaz para Layout Móvil Fijo */
+        @media (max-width: 767.98px) {
+            body {
+                padding-bottom: 85px !important;
+            }
+            #messages-container, .toast-container {
+                bottom: 80px !important;
+            }
+        }
+    </style>
+
     <link rel="apple-touch-icon" href="{% static 'img/mi-logo.png' %}">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -30,7 +42,7 @@
         {% endblock %}
     </div>
 
-    <div class="d-md-none fixed-bottom bg-white border-top shadow-lg" style="backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.94) !important; z-index: 1030;">
+    <nav class="d-md-none fixed-bottom bg-white border-top shadow-lg" style="backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.94) !important; z-index: 1030;">
         <div class="d-flex justify-content-around align-items-center py-2">
             
             <a href="{% url 'dashboard' %}" class="text-center text-decoration-none {% if request.resolver_match.url_name == 'dashboard' %}text-success fw-bold{% else %}text-muted{% endif %}" style="font-size: 0.7rem; width: 20%;">
@@ -59,32 +71,33 @@
             </a>
 
         </div>
-    </div>
+    </nav>
 
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content modal-confirm">
+        <div class="modal-dialog modal-dialog-centered modal-sm px-4">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
                 <div class="modal-body text-center p-4">
-                    <div class="mb-3 icon-danger">
-                        <i class="bi bi-exclamation-circle"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">¿Confirmar borrado?</h5>
-                    <p class="text-muted small px-2" id="deleteConfirmMessage">Esta acción no se puede deshacer.</p>
+                    <i class="bi bi-exclamation-circle text-danger display-5 mb-3 d-block"></i>
+                    <h5 class="fw-bold text-uppercase label-spacing mb-2" style="font-size: 0.95rem;">¿Confirmar borrado?</h5>
+                    <p class="text-muted small mb-4 px-1" id="deleteConfirmMessage">Esta acción no se puede deshacer.</p>
 
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="button" id="btnConfirmDelete" class="btn btn-danger-custom">ELIMINAR AHORA</button>
-                        <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">CANCELAR</button>
+                    <div class="d-flex flex-column gap-2">
+                        <button type="button" id="btnConfirmDelete" class="btn btn-danger py-2.5 fw-bold text-uppercase" style="border-radius: 12px; font-size: 0.75rem; letter-spacing: 0.5px;">
+                            Eliminar ahora
+                        </button>
+                        <button type="button" class="btn btn-light py-2.5 fw-bold text-uppercase text-muted" style="border-radius: 12px; font-size: 0.75rem; letter-spacing: 0.5px;" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
-        <div id="liveToast" class="toast align-items-center text-white border-0 shadow-lg" role="alert"
-            aria-live="assertive" aria-atomic="true">
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 1060;">
+        <div id="liveToast" class="toast align-items-center text-white border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="border-radius: 50px;">
             <div class="d-flex justify-content-center">
-                <div class="toast-body fw-bold text-uppercase label-spacing" id="toastMessage" style="font-size: 0.75rem;">
+                <div class="toast-body fw-bold text-uppercase label-spacing" id="toastMessage" style="font-size: 0.75rem; padding: 10px 24px;">
                     Acción realizada correctamente
                 </div>
             </div>
@@ -94,8 +107,7 @@
     {% if messages %}
         <div id="messages-container" class="position-fixed bottom-0 start-50 translate-middle-x mb-4" style="z-index: 1050;">
             {% for message in messages %}
-                <div class="toast show align-items-center text-white border-0 shadow-lg" role="alert" 
-                     style="background: var(--primary-green); border-radius: 50px; padding: 5px 20px;">
+                <div class="toast show align-items-center text-white border-0 shadow-lg" role="alert" style="background: var(--primary-green, #198754); border-radius: 50px; padding: 5px 20px;">
                     <div class="d-flex">
                         <div class="toast-body fw-bold">
                             <i class="bi bi-check-circle-fill me-2"></i> {{ message }}
@@ -108,35 +120,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        let formToSubmit = null;
-        function confirmDelete(event, element, message) {
-            event.preventDefault();
-            formToSubmit = element.closest('form');
-            document.getElementById('deleteConfirmMessage').innerText = message;
-            const myModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-            myModal.show();
-        }
-        document.getElementById('btnConfirmDelete').addEventListener('click', function () {
-            if (formToSubmit) {
-                bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
-                formToSubmit.submit();
-            }
-        });
-    </script>
-    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/core/core.js' %}"></script>
 
-    <style>
-        /* Agrega un padding inferior en dispositivos móviles para evitar que el contenido sea tapado por el menú */
-        @media (max-width: 767.98px) {
-            body {
-                padding-bottom: 80px !important;
-            }
-            /* Ajuste complementario para los contenedores de mensajes flotantes */
-            #messages-container, .toast-container {
-                bottom: 75px !important;
-            }
-        }
-    </style>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

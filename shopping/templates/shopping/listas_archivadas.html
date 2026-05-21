@@ -3,6 +3,10 @@
 
 {% block title %}Historial de Compras - MarketList{% endblock %}
 
+{% block extra_js %}
+<script src="{% static 'js/history/history.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-12 col-md-8 col-lg-6 text-center">
@@ -12,7 +16,8 @@
                 <i class="bi bi-chevron-left"></i>
             </a>
             <h4 class="fw-bold mb-0 text-uppercase label-spacing fs-5">Compras pasadas</h4>
-            <div style="width: 40px;"></div> </div>
+            <div style="width: 40px;"></div> 
+        </div>
 
         <div class="mb-4">
             <button type="button" id="btnEditMode" class="btn btn-white btn-sm rounded-pill px-4 shadow-sm border fw-bold text-uppercase" 
@@ -84,9 +89,10 @@
                 </div>
             </section>
 
-            <div id="floatingDeleteBar" class="fixed-bottom p-4 d-none col-12 col-md-8 col-lg-6 mx-auto" style="z-index: 1030; background: linear-gradient(to top, var(--bs-body-bg) 80%, transparent);">
+            <div id="floatingDeleteBar" class="fixed-bottom p-3 d-none col-12 col-md-8 col-lg-6 mx-auto" 
+                 style="z-index: 1040; bottom: 75px;">
                 <button type="button" class="btn btn-danger w-100 py-3 fw-bold shadow-lg text-uppercase label-spacing" 
-                        style="border-radius: 16px; font-size: 0.85rem;" onclick="showDeleteModal()">
+                        style="border-radius: 16px; font-size: 0.85rem; letter-spacing: 0.5px;" onclick="showDeleteModal()">
                     <i class="bi bi-trash3 me-2"></i> Eliminar seleccionadas
                 </button>
             </div>

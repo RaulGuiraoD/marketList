@@ -3,6 +3,10 @@
 
 {% block title %}{{ lista.tienda.nombre }} - MarketList{% endblock %}
 
+{% block extra_js %}
+<script src="{% static 'js/lists/lists.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-12 col-md-8 col-lg-6 text-center">
@@ -17,7 +21,8 @@
                     <i class="bi bi-arrow-left-right" style="font-size: 0.75rem;"></i>
                 </button>
             </div>
-            <div style="width: 40px;"></div> </div>
+            <div style="width: 40px;"></div> 
+        </div>
 
         {% if lista.esta_finalizada %}
             <section class="mb-4">
@@ -30,46 +35,47 @@
                 </div>
             </section>
         {% else %}
+        
         <section class="mb-4">
-                <form method="POST" id="formAdd" action="?orden={{ orden_actual }}">
-                    {% csrf_token %}
-                    <div class="input-group shadow-sm border rounded-pill overflow-hidden bg-white mb-2 p-1">
-                        <input type="text" name="nombre" id="inputProducto" 
-                               class="form-control border-0 px-3 bg-transparent" 
-                               placeholder="Añadir producto..." list="productos-existentes" 
-                               required autocomplete="off" style="font-size: 0.95rem; shadow: none;">
-                        
-                        <datalist id="productos-existentes">
-                            {% for sugerencia in sugerencias %}
-                                <option value="{{ sugerencia.nombre }}">
-                            {% endfor %}
-                        </datalist>
-
-                        <button type="submit" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; padding: 0;">
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
-                    </div>
+            <form method="POST" id="formAdd" action="?orden={{ orden_actual }}">
+                {% csrf_token %}
+                <div class="input-group shadow-sm border rounded-pill overflow-hidden bg-white mb-2 p-1 align-items-center">
+                    <input type="text" name="nombre" id="inputProducto" 
+                           class="form-control border-0 px-3 bg-transparent" 
+                           placeholder="Añadir producto..." list="productos-existentes" 
+                           required autocomplete="off" style="font-size: 0.95rem; box-shadow: none;">
                     
-                    <button type="button" class="btn btn-link text-decoration-none text-primary fw-bold label-spacing p-0" 
-                            style="font-size: 0.65rem;" data-bs-toggle="collapse" data-bs-target="#panelSugerencias">
-                        <i class="bi bi-stars me-1"></i> VER FRECUENTES
-                    </button>
+                    <datalist id="productos-existentes">
+                        {% for sugerencia in sugerencias %}
+                            <option value="{{ sugerencia.nombre }}">
+                        {% endfor %}
+                    </datalist>
 
-                    <div class="collapse mt-2" id="panelSugerencias">
-                        <div class="d-flex flex-wrap gap-2 justify-content-center p-2 bg-light" style="border-radius: 14px;">
-                            {% for sug in sugerencias %}
-                            <button type="button" class="btn btn-white btn-sm shadow-sm border border-light-subtle px-3 py-1 fw-medium"
-                                    style="font-size: 0.75rem; border-radius: 10px;" onclick="addFromSugerencia('{{ sug.nombre }}')">
-                                {{ sug.nombre }}
-                            </button>
-                            {% endfor %}
-                        </div>
+                    <button type="submit" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; min-width: 38px; min-height: 38px;">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+                
+                <button type="button" class="btn btn-link text-decoration-none text-primary fw-bold label-spacing p-0" 
+                        style="font-size: 0.65rem;" data-bs-toggle="collapse" data-bs-target="#panelSugerencias">
+                    <i class="bi bi-stars me-1"></i> VER FRECUENTES
+                </button>
+
+                <div class="collapse mt-2" id="panelSugerencias">
+                    <div class="d-flex flex-wrap gap-2 justify-content-center p-2 bg-light" style="border-radius: 14px;">
+                        {% for sug in sugerencias %}
+                        <button type="button" class="btn btn-white btn-sm shadow-sm border border-light-subtle px-3 py-1 fw-medium"
+                                style="font-size: 0.75rem; border-radius: 10px;" onclick="addFromSugerencia('{{ sug.nombre }}')">
+                            {{ sug.nombre }}
+                        </button>
+                        {% endfor %}
                     </div>
-                </form>
-            </section>
+                </div>
+            </form>
+        </section>
         {% endif %}
 
-        <section class="mb-5">
+        <section class="pb-5 mb-5">
             <div class="d-flex justify-content-between align-items-center mb-3 px-2">
                 <small class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">
                     {{ items.count }} Productos
@@ -172,13 +178,13 @@
         </section>
 
         {% if not lista.esta_finalizada and items %}
-            <div class="fixed-bottom p-4 d-grid col-12 col-md-8 col-lg-6 mx-auto" style="background: linear-gradient(to top, var(--bs-body-bg) 75%, transparent); z-index: 1020;">
+            <div class="fixed-bottom p-3 d-grid col-12 col-md-8 col-lg-6 mx-auto" style="z-index: 1040; bottom: 75px;">
                 <button type="button" class="btn btn-dark py-3 fw-bold shadow-lg text-uppercase label-spacing" 
-                        style="border-radius: 16px; font-size: 0.85rem;" data-bs-toggle="modal" data-bs-target="#modalFinalizar">
+                        style="border-radius: 16px; font-size: 0.85rem; letter-spacing: 0.5px;" data-bs-toggle="modal" data-bs-target="#modalFinalizar">
                     Finalizar compra
                 </button>
             </div>
-            <div style="height: 80px;"></div> {% endif %}
+        {% endif %}
     </div>
 </div>
 

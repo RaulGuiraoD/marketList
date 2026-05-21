@@ -93,3 +93,26 @@ function submitMultipleDelete() {
     const form = document.getElementById('formDeleteMultiple');
     if (form) form.submit();
 }
+
+function confirmDeleteIndividual(event, button, message) {
+    event.stopPropagation(); // Evita que se active el modo selección del item de la lista
+    if (confirm(message)) {
+        // Obtiene la URL guardada en el atributo data-url y redirige o procesa mediante POST
+        const url = button.getAttribute('data-url');
+        
+        // Forma limpia recomendada: Crear un formulario temporal e inyectarle el CSRF token para hacer POST seguro
+        const tempForm = document.createElement('form');
+        tempForm.method = 'POST';
+        tempForm.action = url;
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = csrfToken;
+        
+        tempForm.appendChild(csrfInput);
+        document.body.appendChild(tempForm);
+        tempForm.submit();
+    }
+}
