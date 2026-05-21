@@ -8,37 +8,36 @@
     <div class="col-12 col-md-8 col-lg-6 text-center">
         
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="{% url 'dashboard' %}" class="btn btn-light rounded-circle shadow-sm btn-back">
+            <a href="{% url 'dashboard' %}" class="btn btn-light rounded-circle shadow-sm btn-back d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                 <i class="bi bi-chevron-left"></i>
             </a>
-            <div class="d-flex align-items-center justify-content-center">
-                <h4 class="fw-bold mb-0 text-uppercase">{{ lista.tienda.nombre }}</h4>
-                <button type="button" class="btn btn-sm btn-light ms-2 rounded-circle" data-bs-toggle="modal" data-bs-target="#modalCambiarTienda">
-                    <i class="bi bi-arrow-left-right" style="font-size: 0.8rem;"></i>
+            <div class="d-flex align-items-center justify-content-center m-0 max-w-70">
+                <h4 class="fw-bold mb-0 text-uppercase text-truncate fs-5">{{ lista.tienda.nombre }}</h4>
+                <button type="button" class="btn btn-sm btn-light ms-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" data-bs-toggle="modal" data-bs-target="#modalCambiarTienda">
+                    <i class="bi bi-arrow-left-right" style="font-size: 0.75rem;"></i>
                 </button>
             </div>
-            <div class="spacer-header"></div>
-        </div>
+            <div style="width: 40px;"></div> </div>
 
         {% if lista.esta_finalizada %}
-            <section class="section-gap">
-                <div class="alert border-0 shadow-sm mb-4 py-3 card-rounded" style="background-color: #f0fdf4;">
+            <section class="mb-4">
+                <div class="alert border-0 shadow-sm p-3 text-center" style="background-color: #f0fdf4; border-radius: 16px;">
                     <i class="bi bi-check-circle-fill text-success fs-4 d-block mb-1"></i>
                     <h6 class="fw-bold mb-1 text-success text-uppercase label-spacing" style="font-size: 0.75rem;">Compra finalizada</h6>
                     <p class="mb-0 small text-muted">
-                        Total: <strong>{% if lista.total_ticket > 0 %}{{ lista.total_ticket }} €{% else %}No registrado{% endif %}</strong>
+                        Total ticket: <span class="fw-bold text-dark">{% if lista.total_ticket > 0 %}{{ lista.total_ticket }} €{% else %}No registrado{% endif %}</span>
                     </p>
                 </div>
             </section>
         {% else %}
-            <section class="mb-4">
+        <section class="mb-4">
                 <form method="POST" id="formAdd" action="?orden={{ orden_actual }}">
                     {% csrf_token %}
-                    <div class="input-group shadow-sm border-0 input-group-rounded mb-2">
+                    <div class="input-group shadow-sm border rounded-pill overflow-hidden bg-white mb-2 p-1">
                         <input type="text" name="nombre" id="inputProducto" 
-                            class="form-control border-0 px-4 input-add-item" 
-                            placeholder="Añadir producto..." list="productos-existentes" 
-                            required autocomplete="off">
+                               class="form-control border-0 px-3 bg-transparent" 
+                               placeholder="Añadir producto..." list="productos-existentes" 
+                               required autocomplete="off" style="font-size: 0.95rem; shadow: none;">
                         
                         <datalist id="productos-existentes">
                             {% for sugerencia in sugerencias %}
@@ -46,21 +45,21 @@
                             {% endfor %}
                         </datalist>
 
-                        <button type="submit" class="btn btn-primary btn-add-swift">
+                        <button type="submit" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; padding: 0;">
                             <i class="bi bi-plus-lg"></i>
                         </button>
                     </div>
                     
-                    <button type="button" class="btn btn-link text-decoration-none text-primary fw-bold label-spacing" 
+                    <button type="button" class="btn btn-link text-decoration-none text-primary fw-bold label-spacing p-0" 
                             style="font-size: 0.65rem;" data-bs-toggle="collapse" data-bs-target="#panelSugerencias">
                         <i class="bi bi-stars me-1"></i> VER FRECUENTES
                     </button>
 
                     <div class="collapse mt-2" id="panelSugerencias">
-                        <div class="d-flex flex-wrap gap-2 justify-content-center p-2 bg-light rounded-4">
+                        <div class="d-flex flex-wrap gap-2 justify-content-center p-2 bg-light" style="border-radius: 14px;">
                             {% for sug in sugerencias %}
-                            <button type="button" class="btn btn-white btn-sm shadow-sm border-0 px-3 py-1 btn-tag-sugerencia"
-                                    style="font-size: 0.75rem;" onclick="addFromSugerencia('{{ sug.nombre }}')">
+                            <button type="button" class="btn btn-white btn-sm shadow-sm border border-light-subtle px-3 py-1 fw-medium"
+                                    style="font-size: 0.75rem; border-radius: 10px;" onclick="addFromSugerencia('{{ sug.nombre }}')">
                                 {{ sug.nombre }}
                             </button>
                             {% endfor %}
@@ -72,141 +71,135 @@
 
         <section class="mb-5">
             <div class="d-flex justify-content-between align-items-center mb-3 px-2">
-                <small class="text-muted fw-bold text-uppercase" style="font-size: 0.6rem; letter-spacing: 1px;">
-                    {{ items.count }} PRODUCTOS
+                <small class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">
+                    {{ items.count }} Productos
                 </small>
                 
                 <div class="dropdown">
-                    <button class="btn btn-light btn-sm rounded-pill shadow-sm px-3 border-0 text-uppercase fw-bold" 
-                            type="button" data-bs-toggle="dropdown" style="font-size: 0.65rem; color: #666;">
+                    <button class="btn btn-white btn-sm rounded-pill shadow-sm px-3 border border-light-subtle text-uppercase fw-bold text-muted" 
+                            type="button" data-bs-toggle="dropdown" style="font-size: 0.65rem; letter-spacing: 0.5px;">
                         <i class="bi bi-sort-down me-1 text-primary"></i> 
                         {% if orden_actual == 'secciones' %}Por Zonas
                         {% elif orden_actual == 'cantidad' %}Por Cantidad
                         {% else %}Recientes{% endif %}
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 card-rounded p-2" style="border-radius: 15px;">
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 mt-1" style="border-radius: 16px;">
                         <li><a class="dropdown-item small rounded-3 py-2" href="?orden=recientes">
-                            <i class="bi bi-clock-history me-2"></i>Recientes (Modo Casa)
+                            <i class="bi bi-clock-history me-2 text-muted"></i>Recientes (Modo Casa)
                         </a></li>
                         <li><a class="dropdown-item small rounded-3 py-2" href="?orden=secciones">
-                            <i class="bi bi-grid-3x3-gap me-2"></i>Por Zonas (Modo Súper)
+                            <i class="bi bi-grid-3x3-gap me-2 text-muted"></i>Por Zonas (Modo Súper)
                         </a></li>
                         <li><a class="dropdown-item small rounded-3 py-2" href="?orden=cantidad">
-                            <i class="bi bi-123 me-2"></i>Por Cantidad
+                            <i class="bi bi-123 me-2 text-muted"></i>Por Cantidad
                         </a></li>
                     </ul>
                 </div>
             </div>
 
-            <div class="list-group list-group-flush"> 
+            <div class="d-flex flex-column gap-2"> 
                 {% for item in items %}
                     
-                    {# SOLO MOSTRAR SEPARADOR SI EL ORDEN ES POR SECCIONES #}
                     {% if orden_actual == 'secciones' %}
                         {% ifchanged item.producto_maestro.zona %}
-                            {% if not forloop.first %}
-                                <div class="py-2"><hr class="my-1 opacity-25"></div>
-                            {% endif %}
-                            <div class="text-start ps-2 mb-2">
-                                <span class="badge bg-light text-primary text-uppercase" style="font-size: 0.55rem; letter-spacing: 0.5px;">
+                            <div class="text-start ps-1 mt-2 mb-1">
+                                <span class="badge bg-light text-primary text-uppercase border fw-bold" style="font-size: 0.6rem; letter-spacing: 0.5px; border-radius: 6px; padding: 4px 8px;">
                                     {{ item.producto_maestro.zona }}
                                 </span>
                             </div>
                         {% endifchanged %}
                     {% endif %}
 
-                    <div class="list-group-item d-flex align-items-center border-0 shadow-sm item-producto-lista {% if item.comprado %}item-muted{% endif %} mb-1 py-2 px-3" style="border-radius: 15px;">
-                        <div class="me-3">
+                    <div class="d-flex align-items-center justify-content-between border-0 shadow-sm bg-white p-2.5 px-3 {% if item.comprado %}opacity-60 bg-light-subtle{% endif %}" style="border-radius: 16px;">
+                        
+                        <div class="me-3 d-flex align-items-center">
                             {% if not lista.esta_finalizada %}
                                 <a href="{% url 'completar_item' item.id %}?orden={{ orden_actual }}" 
-                                class="btn-action-check {% if item.comprado %}btn-checked{% else %}btn-outline-check{% endif %} text-decoration-none">
-                                    <i class="bi {% if item.comprado %}bi-check-lg{% else %}bi-circle{% endif %}"></i>
+                                   class="fs-5 text-decoration-none {% if item.comprado %}text-success{% else %}text-muted opacity-40{% endif %}">
+                                    <i class="bi {% if item.comprado %}bi-check-circle-fill{% else %}bi-circle{% endif %}"></i>
                                 </a>
                             {% else %}
-                                <div class="btn-action-check {% if item.comprado %}btn-checked{% else %}btn-outline-check{% endif %} opacity-50">
-                                    <i class="bi {% if item.comprado %}bi-check-lg{% else %}bi-circle{% endif %}"></i>
+                                <div class="fs-5 {% if item.comprado %}text-success{% else %}text-muted opacity-30{% endif %}">
+                                    <i class="bi {% if item.comprado %}bi-check-circle-fill{% else %}bi-circle{% endif %}"></i>
                                 </div>
                             {% endif %}
                         </div>
 
-                        <div class="flex-grow-1 text-start">
-                            <span class="fw-semibold d-block {% if item.comprado %}text-decoration-line-through opacity-50 text-muted{% endif %}" style="font-size: 0.95rem; line-height: 1.1;">
+                        <div class="flex-grow-1 text-start min-w-0">
+                            <span class="fw-semibold d-block text-dark text-truncate {% if item.comprado %}text-decoration-line-through text-muted fw-normal{% endif %}" style="font-size: 0.95rem;">
                                 {{ item.producto_maestro.nombre }}
                             </span>
-                            {# Solo mostramos la zona debajo del nombre si NO estamos ordenando por zonas (para no repetir) #}
                             {% if orden_actual != 'secciones' %}
-                                <small class="text-uppercase fw-bold text-primary" style="font-size: 0.55rem; letter-spacing: 0.5px; opacity: 0.8;">
+                                <small class="text-uppercase fw-bold text-muted text-truncate d-block" style="font-size: 0.6rem; letter-spacing: 0.3px;">
                                     {{ item.producto_maestro.zona }}
                                 </small>
                             {% endif %}
                         </div>
 
-                        <div class="d-flex align-items-center bg-light rounded-pill px-2 me-2 border shadow-sm" style="height: 32px;">
+                        <div class="d-flex align-items-center bg-light border rounded-pill px-1.5 ms-2" style="height: 32px;">
                             {% if not lista.esta_finalizada %}
-                                <a href="#" class="btn btn-sm text-primary p-0 btn-cantidad" 
-                                data-url="{% url 'cambiar_cantidad' item.id 'restar' %}" data-item-id="{{ item.id }}">
-                                    <i class="bi bi-dash-circle-fill fs-6"></i>
+                                <a href="#" class="btn btn-sm text-primary p-0 d-flex align-items-center btn-cantidad" data-url="{% url 'cambiar_cantidad' item.id 'restar' %}" data-item-id="{{ item.id }}">
+                                    <i class="bi bi-dash-circle-fill fs-5"></i>
                                 </a>
                             {% endif %}
                             
-                            <span class="mx-2 fw-bold text-dark" id="cantidad-{{ item.id }}" style="min-width: 15px; font-size: 0.8rem;">
+                            <span class="mx-2 fw-bold text-dark text-center" id="cantidad-{{ item.id }}" style="min-width: 18px; font-size: 0.8rem;">
                                 {{ item.cantidad }}
                             </span>
 
                             {% if not lista.esta_finalizada %}
-                                <a href="#" class="btn btn-sm text-primary p-0 btn-cantidad" 
-                                data-url="{% url 'cambiar_cantidad' item.id 'sumar' %}" data-item-id="{{ item.id }}">
-                                    <i class="bi bi-plus-circle-fill fs-6"></i>
+                                <a href="#" class="btn btn-sm text-primary p-0 d-flex align-items-center btn-cantidad" data-url="{% url 'cambiar_cantidad' item.id 'sumar' %}" data-item-id="{{ item.id }}">
+                                    <i class="bi bi-plus-circle-fill fs-5"></i>
                                 </a>
                             {% endif %}
                         </div>
 
                         {% if not lista.esta_finalizada %}
                             <a href="{% url 'eliminar_item' item.id %}?orden={{ orden_actual }}" 
-                            class="btn btn-link text-danger opacity-15 px-2 text-decoration-none">
-                                <i class="bi bi-x-circle-fill fs-4" style="font-size: 0.8rem;"></i>
+                               class="btn btn-link text-danger opacity-25 px-0 ms-3 d-flex align-items-center text-decoration-none">
+                                <i class="bi bi-x-circle-fill fs-5"></i>
                             </a>
                         {% endif %}
                     </div>
+
                 {% empty %}
-                    <div class="py-5">
-                        <i class="bi bi-cart-x text-muted opacity-25 fs-1 d-block mb-2"></i>
-                        <p class="text-muted small">Lista vacía</p>
+                    <div class="py-5 text-center">
+                        <i class="bi bi-cart-x text-muted opacity-25 display-4 d-block mb-2"></i>
+                        <p class="text-muted small">Tu lista está vacía</p>
                     </div>
                 {% endfor %}
             </div>
         </section>
 
         {% if not lista.esta_finalizada and items %}
-            <div class="fixed-bottom p-4 d-grid col-12 col-md-8 col-lg-6 mx-auto" style="background: linear-gradient(to top, white 70%, transparent);">
+            <div class="fixed-bottom p-4 d-grid col-12 col-md-8 col-lg-6 mx-auto" style="background: linear-gradient(to top, var(--bs-body-bg) 75%, transparent); z-index: 1020;">
                 <button type="button" class="btn btn-dark py-3 fw-bold shadow-lg text-uppercase label-spacing" 
-                        style="border-radius: 18px;" data-bs-toggle="modal" data-bs-target="#modalFinalizar">
+                        style="border-radius: 16px; font-size: 0.85rem;" data-bs-toggle="modal" data-bs-target="#modalFinalizar">
                     Finalizar compra
                 </button>
             </div>
-            <div style="height: 100px;"></div>
-        {% endif %}
+            <div style="height: 80px;"></div> {% endif %}
     </div>
 </div>
 
 <div class="modal fade" id="modalFinalizar" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 card-rounded">
-            <div class="modal-header border-0 pt-4 px-4 justify-content-center">
-                <h5 class="modal-title fw-bold text-uppercase label-spacing" style="font-size: 0.8rem;">Resumen de pago</h5>
+    <div class="modal-dialog modal-dialog-centered modal-sm px-4">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-0 pt-4 pb-0 justify-content-center">
+                <h5 class="modal-title fw-bold text-uppercase label-spacing mb-0" style="font-size: 0.8rem;">Resumen de pago</h5>
             </div>
             <form method="POST" action="{% url 'finalizar_compra' lista.id %}">
                 {% csrf_token %}
-                <div class="modal-body px-4 text-center">
-                    <p class="text-muted small mb-4">Introduce el total del ticket</p>
+                <div class="modal-body p-4 text-center">
+                    <p class="text-muted small mb-3">Introduce el importe total de la compra</p>
                     <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden border">
-                        <span class="input-group-text border-0 bg-white text-muted">€</span>
-                        <input type="number" step="0.01" name="total_ticket" class="form-control border-0 text-center fw-bold" placeholder="0.00">
+                        <span class="input-group-text border-0 bg-light text-muted fw-bold" style="font-size: 1.1rem;">€</span>
+                        <input type="number" step="0.01" name="total_ticket" class="form-control border-0 text-center fw-bold text-dark" placeholder="0.00" style="font-size: 1.2rem;">
                     </div>
                 </div>
-                <div class="modal-footer border-0 px-4 pb-4">
-                    <button type="submit" class="btn btn-primary w-100 py-3 shadow-sm fw-bold text-uppercase label-spacing" style="border-radius: 15px; font-size: 0.8rem;">
-                        CERRAR LISTA
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="submit" class="btn btn-primary w-100 py-2.5 shadow-sm fw-bold text-uppercase label-spacing" style="border-radius: 12px; font-size: 0.75rem; letter-spacing: 0.5px;">
+                        Cerrar Lista
                     </button>
                 </div>
             </form>
@@ -215,18 +208,18 @@
 </div>
 
 <div class="modal fade" id="modalCambiarTienda" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 card-rounded shadow-lg">
-            <div class="modal-header border-0 pb-0">
-                <h6 class="fw-bold text-uppercase mb-0">Cambiar Tienda</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered modal-sm px-4">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-0 pt-4 pb-0 justify-content-between align-items-center px-4">
+                <h6 class="fw-bold text-uppercase mb-0" style="font-size: 0.8rem; letter-spacing: 0.5px;">Cambiar Tienda</h6>
+                <button type="button" class="btn-close style-none" data-bs-dismiss="modal" aria-label="Close" style="font-size: 0.75rem;"></button>
             </div>
             <div class="modal-body p-4">
                 <form method="POST" action="{% url 'cambiar_tienda_lista' lista.id %}">
                     {% csrf_token %}
                     <div class="mb-4">
-                        <label class="small fw-bold text-muted mb-2">SELECCIONA NUEVO DESTINO:</label>
-                        <select name="nueva_tienda" class="form-select border-0 shadow-sm py-2 px-3">
+                        <label class="small fw-bold text-muted mb-2" style="font-size: 0.65rem; letter-spacing: 0.5px;">SELECCIONA NUEVO DESTINO:</label>
+                        <select name="nueva_tienda" class="form-select border shadow-sm py-2 px-3 text-dark fw-medium" style="border-radius: 10px; font-size: 0.9rem;">
                             {% for tienda in tiendas_disponibles %}
                                 <option value="{{ tienda.id }}" {% if tienda == lista.tienda %}selected{% endif %}>
                                     {{ tienda.nombre }}
@@ -234,7 +227,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold text-uppercase" style="border-radius: 12px;">
+                    <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold text-uppercase" style="border-radius: 12px; font-size: 0.75rem; letter-spacing: 0.5px;">
                         Actualizar Tienda
                     </button>
                 </form>
