@@ -1,42 +1,38 @@
-/**
- * MarketList - User Profile & Dashboard Metrics
- * Renderizado interactivo de selectores de avatar y animación del presupuesto.
- */
-
 document.addEventListener('DOMContentLoaded', function () {
-    
-    // 1. Manejo del panel selector de avatares interactivos
-    const avatarInputs = document.querySelectorAll('.avatar-input');
-    const currentAvatarDisplay = document.getElementById('current-avatar');
+    const avatarInput = document.getElementById('avatar_input');
+    const previewImg = document.getElementById('current-avatar-img');
+    const placeholderDiv = document.getElementById('avatar-placeholder');
 
-    avatarInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            if (this.checked) {
-                if (currentAvatarDisplay) {
-                    currentAvatarDisplay.innerText = this.value;
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                // Validación estricta de peso en cliente (5MB)
+                if (file.size > 5242880) { 
+                    if (typeof showToast === 'function') {
+                        showToast("La imagen excede los 5MB.", true);
+                    } else {
+                        alert("La imagen no puede superar los 5MB.");
+                    }
+                    this.value = "";
+                    return;
                 }
 
-                document.querySelectorAll('.avatar-selector-btn').forEach(btn => {
-                    btn.classList.remove('active-avatar');
-                });
-                this.parentElement.classList.add('active-avatar');
+                // Lector asíncrono de ficheros en tiempo real
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (previewImg) {
+                        previewImg.src = e.target.result;
+                        previewImg.classList.remove('d-none');
+                        previewImg.style.display = 'block'; // Asegura renderizado
+                    }
+                    if (placeholderDiv) {
+                        placeholderDiv.classList.add('d-none');
+                        placeholderDiv.style.display = 'none';
+                    }
+                }
+                reader.readAsDataURL(file);
             }
         });
-    });
-
-    // 2. Animación de llenado progresivo en barra de estadísticas
-    const bar = document.getElementById('budget-bar');
-    
-    if (bar) {
-        // Obtenemos el valor asignado por Django y normalizamos formato decimal local
-        let pct = bar.getAttribute('data-percentage').replace(',', '.');
-        
-        // Inicializamos forzado a cero
-        bar.style.setProperty('width', '0%', 'important');
-
-        // Renderizado fluido diferido
-        setTimeout(() => {
-            bar.style.setProperty('width', pct + '%', 'important');
-        }, 300);
     }
 });

@@ -4,7 +4,7 @@
 {% block title %}Dashboard - MarketList{% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/users/profile.js' %}"></script>
+<script src="{% static 'js/profile/profile.js' %}"></script>
 {% endblock %}
 
 {% block extra_css %}
@@ -14,11 +14,11 @@
 {% block seccion_titulo %}SwiftList{% endblock %}
 
 {% block header_left_dashboard %}
-<a href="{% url 'perfil' %}" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center border-0 p-0 btn-header-box" style="font-size: 1.1rem;">
-    {% if user.perfilusuario.avatar_icon %}
-        <span>{{ user.perfilusuario.avatar_icon }}</span>
+<a href="{% url 'perfil' %}" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center border-0 p-0 overflow-hidden btn-header-box" style="width: 40px; height: 40px;">
+    {% if user.perfilusuario.avatar_image %}
+        <img src="{{ user.perfilusuario.avatar_image.url }}" alt="Perfil" class="w-100 h-100 object-fit-cover">
     {% else %}
-        <i class="fa-solid fa-user text-primary" style="font-size: 0.95rem;"></i>
+        <i class="fa-solid fa-user text-secondary" style="font-size: 0.95rem;"></i>
     {% endif %}
 </a>
 {% endblock %}

@@ -4,7 +4,7 @@
 {% block title %}Mi Perfil - SwiftList{% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/users/profile.js' %}"></script>
+<script src="{% static 'js/profile/profile.js' %}"></script>
 {% endblock %}
 
 {% block extra_css %}
@@ -14,70 +14,34 @@
 {% block seccion_titulo %}Mi Perfil{% endblock %}
 
 {% block content %}
-<form method="POST" class="text-start">
+<form method="POST" action="{% url 'perfil' %}" enctype="multipart/form-data" class="text-start">
     {% csrf_token %}
     
     <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
         <div class="card-body p-4 text-center">
-            <div class="bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2.5rem;">
-                <span id="current-avatar">{{ perfil.avatar_icon }}</span>
+            <div class="position-relative d-inline-block mb-3">
+                <div class="rounded-circle overflow-hidden d-flex align-items-center justify-content-center mx-auto bg-light border text-secondary shadow-sm" style="width: 100px; height: 100px;">
+                    {% if perfil.avatar_image %}
+                        <img id="current-avatar-img" src="{{ perfil.avatar_image.url }}" alt="Avatar" class="w-100 h-100 object-fit-cover">
+                    {% else %}
+                        <div id="avatar-placeholder" class="d-flex align-items-center justify-content-center w-100 h-100 bg-secondary-subtle">
+                            <i class="bi bi-person-fill" style="font-size: 3rem;"></i>
+                        </div>
+                        <img id="current-avatar-img" src="" alt="Avatar" class="w-100 h-100 object-fit-cover d-none" style="display: none;">
+                    {% endif %}
+                </div>
+                <input type="file" name="avatar_image" id="avatar_input" class="d-none" accept="image/jpeg,image/png,image/webp">
             </div>
-            <p class="text-muted small fw-bold text-uppercase mb-3" style="letter-spacing: 0.5px;">Elige tu icono</p>
-            
-            <div class="d-flex justify-content-center gap-2 flex-wrap">
-                {% with current_icon=perfil.avatar_icon|default:"👤" %}
-                
-                <label class="btn btn-light border avatar-selector-btn rounded-circle d-flex align-items-center justify-content-center p-0 {% if current_icon == '👤' %}active-avatar{% endif %}" style="width: 45px; height: 45px;">
-                    <input type="radio" name="avatar_icon" value="👤" class="d-none avatar-input" {% if current_icon == '👤' %}checked{% endif %}>
-                    <span class="fs-4">👤</span>
-                </label>
-
-                <label class="btn btn-light border avatar-selector-btn rounded-circle d-flex align-items-center justify-content-center p-0 {% if current_icon == '🍎' %}active-avatar{% endif %}" style="width: 45px; height: 45px;">
-                    <input type="radio" name="avatar_icon" value="🍎" class="d-none avatar-input" {% if current_icon == '🍎' %}checked{% endif %}>
-                    <span class="fs-4">🍎</span>
-                </label>
-
-                <label class="btn btn-light border avatar-selector-btn rounded-circle d-flex align-items-center justify-content-center p-0 {% if current_icon == '🥦' %}active-avatar{% endif %}" style="width: 45px; height: 45px;">
-                    <input type="radio" name="avatar_icon" value="🥦" class="d-none avatar-input" {% if current_icon == '🥦' %}checked{% endif %}>
-                    <span class="fs-4">🥦</span>
-                </label>
-
-                <label class="btn btn-light border avatar-selector-btn rounded-circle d-flex align-items-center justify-content-center p-0 {% if current_icon == '🥩' %}active-avatar{% endif %}" style="width: 45px; height: 45px;">
-                    <input type="radio" name="avatar_icon" value="🥩" class="d-none avatar-input" {% if current_icon == '🥩' %}checked{% endif %}>
-                    <span class="fs-4">🥩</span>
-                </label>
-
-                <label class="btn btn-light border avatar-selector-btn rounded-circle d-flex align-items-center justify-content-center p-0 {% if current_icon == '🛒' %}active-avatar{% endif %}" style="width: 45px; height: 45px;">
-                    <input type="radio" name="avatar_icon" value="🛒" class="d-none avatar-input" {% if current_icon == '🛒' %}checked{% endif %}>
-                    <span class="fs-4">🛒</span>
-                </label>
-
-                <label class="btn btn-light border avatar-selector-btn rounded-circle d-flex align-items-center justify-content-center p-0 {% if current_icon == '🍕' %}active-avatar{% endif %}" style="width: 45px; height: 45px;">
-                    <input type="radio" name="avatar_icon" value="🍕" class="d-none avatar-input" {% if current_icon == '🍕' %}checked{% endif %}>
-                    <span class="fs-4">🍕</span>
-                </label>
-
-                <label class="btn btn-light border avatar-selector-btn rounded-circle d-flex align-items-center justify-content-center p-0 {% if current_icon == '🥑' %}active-avatar{% endif %}" style="width: 45px; height: 45px;">
-                    <input type="radio" name="avatar_icon" value="🥑" class="d-none avatar-input" {% if current_icon == '🥑' %}checked{% endif %}>
-                    <span class="fs-4">🥑</span>
-                </label>
-
-                <label class="btn btn-light border avatar-selector-btn rounded-circle d-flex align-items-center justify-content-center p-0 {% if current_icon == '🐱' %}active-avatar{% endif %}" style="width: 45px; height: 45px;">
-                    <input type="radio" name="avatar_icon" value="🐱" class="d-none avatar-input" {% if current_icon == '🐱' %}checked{% endif %}>
-                    <span class="fs-4">🐱</span>
-                </label>
-
-                <label class="btn btn-light border avatar-selector-btn rounded-circle d-flex align-items-center justify-content-center p-0 {% if current_icon == '🐶' %}active-avatar{% endif %}" style="width: 45px; height: 45px;">
-                    <input type="radio" name="avatar_icon" value="🐶" class="d-none avatar-input" {% if current_icon == '🐶' %}checked{% endif %}>
-                    <span class="fs-4">🐶</span>
-                </label>
-
-                <label class="btn btn-light border avatar-selector-btn rounded-circle d-flex align-items-center justify-content-center p-0 {% if current_icon == '⚡' %}active-avatar{% endif %}" style="width: 45px; height: 45px;">
-                    <input type="radio" name="avatar_icon" value="⚡" class="d-none avatar-input" {% if current_icon == '⚡' %}checked{% endif %}>
-                    <span class="fs-4">⚡</span>
-                </label>
-
-                {% endwith %}
+            <div>
+                <button type="button" 
+                        class="btn btn-sm px-4 fw-bold" 
+                        id="btn-upload-trigger" 
+                        onclick="document.getElementById('avatar_input').click();" 
+                        style="border-radius: 20px; border: 2px solid #2e5933; color: #2e5933; background-color: transparent; transition: all 0.2s ease-in-out;"
+                        onmouseover="this.style.backgroundColor='#eaf2ec'; this.style.color='#1c3d20';"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2e5933';">
+                    <i class="bi bi-camera me-1"></i> Cambiar imagen
+                </button>
             </div>
         </div>
     </div>
@@ -122,7 +86,11 @@
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary w-100 py-3 shadow-sm btn-empezar fw-bold text-uppercase mb-5" style="border-radius: 14px; font-size: 0.85rem; letter-spacing: 0.5px;">
+    <button type="submit" 
+            class="btn w-100 py-3 shadow-sm fw-bold text-uppercase mb-5" 
+            style="border-radius: 14px; font-size: 0.85rem; letter-spacing: 0.5px; background-color: #2e5933; border-color: #2e5933; color: white; transition: background-color 0.2s;"
+            onmouseover="this.style.backgroundColor='#1c3d20';"
+            onmouseout="this.style.backgroundColor='#2e5933';">
         GUARDAR CAMBIOS
     </button>
 </form>
