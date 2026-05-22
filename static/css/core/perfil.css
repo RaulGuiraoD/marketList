@@ -1,0 +1,53 @@
+/* ==========================================================================
+   MÓDULO: CONFIGURACIÓN Y PERFIL DE USUARIO (perfil.css)
+   ========================================================================== */
+
+/* --- Selector de Avatar con Emojis --- */
+.avatar-selector-btn {
+    background-color: #ffffff !important;
+    border: 2px solid #e9ecef !important;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+}
+
+.avatar-selector-btn:hover {
+    transform: translateY(-2px);
+    border-color: #ced4da !important;
+}
+
+/* Estado Activo / Seleccionado por JS o Django */
+.avatar-selector-btn.active-avatar {
+    background-color: var(--primary-green-light) !important;
+    border-color: var(--primary-green) !important;
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.avatar-selector-btn:active {
+    transform: scale(0.9);
+}
+
+/* --- Campos de Datos Personales --- */
+.card input:focus, 
+.card select:focus {
+    background-color: #e9ecef !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Formateador específico para el prefijo e input numérico de presupuesto */
+input[type="number"]#presupuesto {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* Eliminar flechas nativas del input numérico para mantener la estética limpia */
+input[type="number"]#presupuesto::-webkit-inner-spin-button,
+input[type="number"]#presupuesto::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"]#presupuesto {
+    -moz-appearance: textfield;
+}

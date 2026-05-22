@@ -1,0 +1,132 @@
+/* ==========================================================================
+   MÓDULO DE DETALLE DE COMPRA / GESTIÓN EN TIENDA (lista_detalles.css)
+   ========================================================================== */
+
+/* --- Cabecera Dinámica y Cambio de Tienda --- */
+.max-w-100 {
+    max-width: 100%;
+}
+
+/* --- Formulario de Adición Rápida (Modo Casa) --- */
+#inputProducto:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Buscador e input encapsulado estilo píldora */
+.input-group-rounded,
+.input-group.rounded-pill {
+    background-color: #ffffff;
+    border: 1px solid var(--card-border) !important;
+    padding: 4px;
+    overflow: hidden;
+}
+
+.input-add-item {
+    border-radius: 50px !important;
+    height: 50px;
+    font-weight: 500;
+}
+
+/* Botón flotante ágil "+" */
+.btn-add-swift {
+    border-radius: 50px !important;
+    width: 42px;
+    height: 42px;
+    margin: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    transition: all 0.3s ease;
+}
+
+.btn-add-swift:active {
+    transform: scale(0.9);
+}
+
+.btn-add-swift i {
+    font-size: 1.2rem;
+    -webkit-text-stroke: 1px;
+}
+
+/* --- Panel de Sugerencias Frecuentes / Tags --- */
+.btn-tag-sugerencia,
+.btn-white.btn-sm {
+    background: #ffffff !important;
+    color: var(--text-dark) !important;
+    transition: all 0.2s ease;
+}
+
+.btn-tag-sugerencia:hover,
+.btn-white.btn-sm:hover {
+    background: var(--primary-green-light) !important;
+    color: var(--primary-green) !important;
+    transform: translateY(-1px);
+    border-color: var(--primary-green-light) !important;
+}
+
+/* --- Filtros y Menú Desplegable de Ordenación --- */
+.dropdown-menu {
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+.dropdown-item {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--primary-green-light) !important;
+    color: var(--primary-green) !important;
+}
+
+/* --- Contenedor de Items de Producto --- */
+.item-producto-lista {
+    border-radius: 16px !important;
+    padding: 1rem 1.2rem;
+    transition: all 0.2s ease;
+    margin-bottom: 0.5rem;
+}
+
+/* Modificadores de estado (Comprado / Finalizado) */
+.opacity-60 { opacity: 0.60 !important; }
+.opacity-40 { opacity: 0.40 !important; }
+.opacity-30 { opacity: 0.30 !important; }
+
+.bg-light-subtle {
+    background-color: #f8f9fa !important;
+}
+
+/* --- Controlador de Cantidades Flotante --- */
+.btn-cantidad {
+    transition: transform 0.1s ease;
+}
+
+.btn-cantidad:active {
+    transform: scale(0.85);
+}
+
+#cantidad- {
+    transition: transform 0.1s ease;
+}
+
+.scale-up {
+    transform: scale(1.3);
+    color: var(--primary-green) !important;
+}
+
+/* --- Barra de Acciones del Ciclo de Vida --- */
+.fixed-bottom {
+    z-index: 1040;
+    bottom: 75px;
+    max-width: 540px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Ajustes específicos para inputs numéricos de ticket dentro de modales */
+.input-group-lg .form-control {
+    font-size: 1.2rem;
+    font-weight: 700;
+}

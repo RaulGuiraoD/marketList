@@ -1,0 +1,60 @@
+/* ==========================================================================
+   MÓDULO: ADMINISTRACIÓN DE TIENDAS PROPIAS (gestionar_tiendas.css)
+   ========================================================================== */
+
+/* --- Tarjetas del Listado de Tiendas --- */
+.card {
+    background-color: #ffffff;
+    /* Nota: El color de "border-left" se hereda dinámicamente desde el HTML */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* --- Botoneras de Edición y Eliminación de Fila --- */
+.card .btn-light {
+    background-color: #f8f9fa !important;
+    transition: all 0.2s ease;
+}
+
+.card .btn-light:hover {
+    background-color: #e9ecef !important;
+}
+
+.card .btn-light.text-primary:active {
+    background-color: var(--primary-green-light) !important;
+    color: var(--primary-green) !important;
+    transform: scale(0.92);
+}
+
+.card .btn-light.text-danger:active {
+    background-color: #ffeef0 !important;
+    transform: scale(0.92);
+}
+
+/* --- Modales de Actualización Interna --- */
+.modal-content {
+    background-color: #ffffff;
+}
+
+/* Input de texto para renombrar */
+.modal-body input[type="text"]:focus {
+    border-color: var(--primary-green) !important;
+    box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.15) !important;
+    outline: none !important;
+}
+
+/* Input nativo de color */
+.form-control-color {
+    max-width: 50px;
+    cursor: pointer;
+    background-color: #ffffff;
+    transition: transform 0.15s ease;
+}
+
+.form-control-color:active {
+    transform: scale(0.95);
+}

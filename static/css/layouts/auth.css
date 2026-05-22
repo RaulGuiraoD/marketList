@@ -1,0 +1,82 @@
+:root {
+    --bg-warm: #fcfbf6;
+    --primary-green: #2d5a27;
+    --primary-green-light: #e8f5e9;
+    --text-dark: #2c2c2c;
+    --text-muted: #7a7a7a;
+    --card-border: #f0eee4;
+    --danger-red: #de1818;
+}
+
+body {
+    background-color: var(--bg-warm);
+    color: var(--text-dark);
+    font-family: 'Outfit', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Contenedor centralizado para pantallas de autenticación */
+.wrapper-auth {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: var(--bg-warm);
+}
+
+.auth-card-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-logo {
+    max-height: 90px;
+    width: auto;
+}
+
+/* Elementos comunes de formularios aplicados en Auth */
+.card {
+    border-radius: 24px;
+    border: 1px solid var(--card-border);
+    background-color: #ffffff;
+}
+
+.form-control,
+.form-select {
+    background-color: #ffffff !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 16px !important;
+    padding: 12px 20px;
+}
+
+/* Botonera y feedbacks básicos en Login/Registro */
+.btn:active {
+    transform: scale(0.97);
+    transition: transform 0.1s;
+}
+
+.btn-primary {
+    background-color: var(--primary-green) !important;
+    border: none !important;
+    border-radius: 16px;
+    font-weight: 600;
+}
+
+.text-primary {
+    color: var(--primary-green) !important;
+}
+
+.avatar-selector-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.active-avatar {
+    background-color: var(--primary-green-light) !important;
+    border-color: var(--primary-green) !important;
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}

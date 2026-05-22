@@ -1,0 +1,91 @@
+/* ==========================================================================
+   MÓDULO: PANEL PRINCIPAL / DASHBOARD (dashboard.css)
+   ========================================================================== */
+
+/* --- Cabecera y Zona de Bienvenida --- */
+.btn-header-box {
+    width: 40px;
+    height: 40px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-header-box:active {
+    transform: scale(0.92);
+}
+
+.footer-brand {
+    user-select: none;
+    pointer-events: none;
+}
+
+/* --- Tarjeta Generadora de Listas --- */
+.card-dashboard-main {
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Dropdown/Select estilizado de destino */
+.select-custom-dash {
+    color: var(--text-dark) !important;
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1.25rem center;
+    background-size: 16px 12px;
+}
+
+.select-custom-dash:focus {
+    background-color: #f1f3f5 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Botón de acción principal */
+.btn-empezar {
+    transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+.btn-empezar:active {
+    transform: scale(0.98);
+}
+
+/* --- Listas Abiertas Pendientes --- */
+.card-lista-abierta {
+    background-color: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-lista-abierta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Flag lateral dinámico por tienda */
+.indicador-color-tienda {
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+}
+
+.badge-productos {
+    font-size: 0.6rem;
+    letter-spacing: 0.3px;
+    padding: 4px 8px !important;
+}
+
+/* --- Modal: Añadir Nuevo Supermercado --- */
+.modal-tienda-dash {
+    background-color: #ffffff;
+}
+
+.input-tienda-name:focus {
+    box-shadow: none !important;
+    background-color: #e9ecef !important;
+}
+
+.input-color-custom {
+    width: 48px;
+    height: 38px;
+    padding: 2px !important;
+    cursor: pointer;
+}

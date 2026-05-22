@@ -1,0 +1,90 @@
+/* ==========================================================================
+   MÓDULO: HISTORIAL MAESTRO DE PRODUCTOS / SUGERENCIAS (gestionar_maestro.css)
+   ========================================================================== */
+
+/* --- Filtro y Buscador Superior --- */
+.input-search-custom {
+    background-color: #ffffff;
+    height: 52px;
+    border-radius: 14px;
+    font-weight: 500;
+    transition: box-shadow 0.25s ease;
+}
+
+.input-search-custom:focus {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06) !important;
+    background-color: #ffffff;
+}
+
+/* Botón disparador del modo edición (multi-selección) */
+#btnEditMode {
+    background-color: #ffffff !important;
+    color: var(--text-dark) !important;
+    transition: all 0.2s ease;
+}
+
+#btnEditMode:active {
+    transform: scale(0.96);
+}
+
+/* --- Herramientas de Selección Múltiple Pasiva --- */
+#selectionTools {
+    animation: slideDownMenu 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideDownMenu {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-green) !important;
+    border-color: var(--primary-green) !important;
+}
+
+/* --- Filas del Catálogo (.item-maestro) --- */
+.item-maestro {
+    background-color: #ffffff !important;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    user-select: none;
+}
+
+/* Efecto focus al presionar o arrastrar */
+.item-maestro:active {
+    background-color: #f8f9fa !important;
+}
+
+/* Subtexto indicador de uso analítico */
+.label-frecuencia {
+    color: #8c96a0 !important;
+}
+
+/* Contenedor del checkbox de lote animado */
+.check-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botón de borrado rápido unitario */
+.individual-delete .btn-light {
+    background-color: #fdf2f4 !important;
+    color: #dc3545 !important;
+    transition: all 0.2s ease;
+}
+
+.individual-delete .btn-light:hover {
+    background-color: #fbdbe1 !important;
+}
+
+/* --- Barra de Borrado Flotante Masivo --- */
+#floatingDeleteBar {
+    left: 50%;
+    transform: translateX(-50%);
+    animation: popUpBar 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes popUpBar {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}

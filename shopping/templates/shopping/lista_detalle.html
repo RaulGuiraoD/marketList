@@ -7,6 +7,10 @@
 <script src="{% static 'js/lists/lists.js' %}"></script>
 {% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/shopping/lista_detalles.css' %}">
+{% endblock %}
+
 {% block seccion_titulo %}
 <div class="d-inline-flex align-items-center justify-content-center max-w-100">
     <span class="text-truncate">{{ lista.tienda.nombre }}</span>

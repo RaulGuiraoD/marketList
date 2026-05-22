@@ -1,8 +1,15 @@
 {% extends 'layouts/base.html' %}
-
-{% block title %}Estadísticas - MarketList{% endblock %}
+{% load static %} {% block title %}Estadísticas - MarketList{% endblock %}
 
 {% block seccion_titulo %}Estadísticas de compra{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/analytics/estadisticas.js' %}"></script>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/analytics/estadisticas.css' %}">
+{% endblock %}
 
 {% block content %}
 <section class="mb-4">

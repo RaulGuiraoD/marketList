@@ -1,0 +1,88 @@
+/* ==========================================================================
+   MÓDULO DE HISTORIAL / COMPRAS PASADAS (lista_archivadas.css)
+   ========================================================================== */
+
+/* --- Contenedor e Invocadores de Modo Edición --- */
+#btnEditMode {
+    transition: transform 0.1s active, box-shadow 0.2s ease;
+}
+
+#btnEditMode:active {
+    transform: scale(0.95);
+}
+
+/* Área de herramientas de selección masiva */
+#selectionTools {
+    transition: all 0.3s ease;
+}
+
+/* --- Tarjeta del Historial (card-historial) --- */
+.card-historial {
+    border-radius: 16px !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-historial:hover {
+    transform: scale(1.01) translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Contenedor del checkbox ocultable en modo selección */
+.check-container {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.lista-checkbox {
+    cursor: pointer;
+}
+
+/* --- Botoneras Especiales e Insignias del Historial --- */
+.btn-view-historial {
+    background-color: var(--primary-green-light) !important;
+    color: var(--primary-green) !important;
+}
+
+.btn-reopen-historial {
+    background-color: #fff9e6 !important;
+    color: #856404 !important;
+    transition: background-color 0.2s ease;
+}
+
+.btn-reopen-historial:hover {
+    background-color: #ffecb3 !important;
+}
+
+.btn-action-historial {
+    font-size: 0.65rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px;
+    padding: 8px 15px !important;
+    border-radius: 12px !important;
+    border: none !important;
+}
+
+/* --- Elementos Flotantes y Emergentes --- */
+#floatingDeleteBar {
+    z-index: 1040;
+    bottom: 75px;
+    max-width: 540px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Animación de entrada suave (fade-in) para las tarjetas */
+.animate-fade-in {
+    animation: historyFadeIn 0.35s ease-out forwards;
+}
+
+@keyframes historyFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
