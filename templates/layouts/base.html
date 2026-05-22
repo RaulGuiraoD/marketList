@@ -26,50 +26,75 @@
                 bottom: 80px !important;
             }
         }
+        .max-w-70 { max-width: 70%; }
+        .btn-header-box { width: 40px; height: 40px; }
     </style>
-
-    <link rel="apple-touch-icon" href="{% static 'img/mi-logo.png' %}">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     {% block extra_css %}{% endblock %}
 </head>
 
 <body>
     <div class="container container-main py-4">
-        {% block content %}
-        {% endblock %}
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6 text-center">
+                
+                <div class="d-flex justify-content-between align-items-center mb-4 px-1">
+                    
+                    <div class="btn-header-box d-flex align-items-center justify-content-start">
+                        {% if request.resolver_match.url_name != 'dashboard' %}
+                            <button onclick="window.history.back();" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center border-0 p-0 btn-header-box">
+                                <i class="bi bi-chevron-left" style="font-size: 1.1rem;"></i>
+                            </button>
+                        {% else %}
+                            {% block header_left_dashboard %}{% endblock %}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex align-items-center justify-content-center m-0 max-w-70">
+                        <h4 class="fw-bold mb-0 text-uppercase text-truncate fs-5" style="letter-spacing: 0.5px;">
+                            {% block seccion_titulo %}{% endblock %}
+                        </h4>
+                    </div>
+                    
+                    <div class="btn-header-box d-flex align-items-center justify-content-end">
+                        {% if request.resolver_match.url_name == 'dashboard' %}
+                            <button type="button" class="btn btn-light text-danger rounded-circle d-flex align-items-center justify-content-center p-0 shadow-sm border-0 btn-header-box" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                                <i class="bi bi-box-arrow-right" style="font-size: 1.1rem; margin-left: 2px;"></i>
+                            </button>
+                        {% else %}
+                            {% block header_right_extra %}<div class="btn-header-box"></div>{% endblock %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% block content %}{% endblock %}
+
+            </div>
+        </div>
     </div>
 
     <nav class="d-md-none fixed-bottom bg-white border-top shadow-lg" style="backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.94) !important; z-index: 1030;">
         <div class="d-flex justify-content-around align-items-center py-2">
-            
             <a href="{% url 'dashboard' %}" class="text-center text-decoration-none {% if request.resolver_match.url_name == 'dashboard' %}text-success fw-bold{% else %}text-muted{% endif %}" style="font-size: 0.7rem; width: 20%;">
                 <div class="fs-4 mb-1"><i class="fa-solid fa-house"></i></div>
                 <span>Inicio</span>
             </a>
-
             <a href="{% url 'listas_archivadas' %}" class="text-center text-decoration-none {% if request.resolver_match.url_name == 'listas_archivadas' %}text-success fw-bold{% else %}text-muted{% endif %}" style="font-size: 0.7rem; width: 20%;">
                 <div class="fs-4 mb-1"><i class="fa-solid fa-calendar-days"></i></div>
                 <span>Historial</span>
             </a>
-
             <a href="{% url 'gestionar_tiendas' %}" class="text-center text-decoration-none {% if request.resolver_match.url_name == 'gestionar_tiendas' %}text-success fw-bold{% else %}text-muted{% endif %}" style="font-size: 0.7rem; width: 20%;">
                 <div class="fs-4 mb-1"><i class="fa-solid fa-shop"></i></div>
                 <span>Tiendas</span>
             </a>
-
             <a href="{% url 'gestionar_maestro' %}" class="text-center text-decoration-none {% if request.resolver_match.url_name == 'gestionar_maestro' %}text-success fw-bold{% else %}text-muted{% endif %}" style="font-size: 0.7rem; width: 20%;">
                 <div class="fs-4 mb-1"><i class="fa-solid fa-rectangle-list"></i></div>
                 <span>Productos</span>
             </a>
-
             <a href="{% url 'estadisticas' %}" class="text-center text-decoration-none {% if request.resolver_match.url_name == 'estadisticas' %}text-success fw-bold{% else %}text-muted{% endif %}" style="font-size: 0.7rem; width: 20%;">
                 <div class="fs-4 mb-1"><i class="fa-solid fa-chart-line"></i></div>
                 <span>Stats</span>
             </a>
-
         </div>
     </nav>
 
@@ -80,7 +105,6 @@
                     <i class="bi bi-exclamation-circle text-danger display-5 mb-3 d-block"></i>
                     <h5 class="fw-bold text-uppercase label-spacing mb-2" style="font-size: 0.95rem;">¿Confirmar borrado?</h5>
                     <p class="text-muted small mb-4 px-1" id="deleteConfirmMessage">Esta acción no se puede deshacer.</p>
-
                     <div class="d-flex flex-column gap-2">
                         <button type="button" id="btnConfirmDelete" class="btn btn-danger py-2.5 fw-bold text-uppercase" style="border-radius: 12px; font-size: 0.75rem; letter-spacing: 0.5px;">
                             Eliminar ahora
@@ -118,10 +142,33 @@
         </div>
     {% endif %}
 
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm px-4"> 
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-body text-center p-4">
+                    <div class="text-danger mb-3" style="font-size: 2.5rem;">
+                        <i class="bi bi-exclamation-circle-fill" style="color: var(--danger-red);"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">¿Cerrar sesión?</h5>
+                    <p class="text-muted small mb-4">Tendrás que volver a introducir tus credenciales para acceder.</p>
+                    <div class="d-flex flex-column gap-2">
+                        <form action="{% url 'logout' %}" method="post" class="m-0 w-100">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger w-100 rounded-pill fw-bold py-2.5 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                Sí, salir
+                            </button>
+                        </form>
+                        <button type="button" class="btn btn-light w-100 rounded-pill fw-bold text-muted py-2.5 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="{% static 'js/core/core.js' %}"></script>
-
     {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -1,92 +1,79 @@
 {% extends 'layouts/base.html' %}
-{% load static %} {% block title %}Gestionar Tiendas - MarketList{% endblock %}
+{% load static %}
+
+{% block title %}Gestionar Tiendas - MarketList{% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/core/core.js' %}"></script>
 {% endblock %}
 
+{% block seccion_titulo %}Mis Tiendas{% endblock %}
+
 {% block content %}
+<div class="d-flex flex-column gap-3 mb-5 pb-5">
+    {% for t in tiendas %}
+    <div class="card border-0 shadow-sm p-3" style="border-radius: 18px; border-left: 6px solid {{ t.color_hex }} !important;">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="ms-2">
+                <h6 class="fw-bold mb-0 text-dark">{{ t.nombre }}</h6>
+                <small class="text-muted text-uppercase fw-semibold" style="font-size: 0.65rem; letter-spacing: 0.3px;">Color: {{ t.color_hex }}</small>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button class="btn btn-light text-primary rounded-pill border-0 shadow-sm d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;"
+                        data-bs-toggle="modal" data-bs-target="#modalEditar{{ t.id }}">
+                    <i class="bi bi-pencil-fill"></i>
+                </button>
 
-<div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6">
-        
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="{% url 'dashboard' %}" class="btn btn-light rounded-circle shadow-sm">
-                <i class="bi bi-chevron-left"></i>
-            </a>
-            <h4 class="fw-bold mb-0">Mis Tiendas</h4>
-            <div style="width: 40px;"></div>
+                <form method="POST" action="{% url 'eliminar_tienda' t.id %}">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-light text-danger rounded-pill border-0 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;"
+                            onclick="confirmDelete(event, this, 'Se borrará la tienda {{ t.nombre }} y TODO su historial.')">
+                        <i class="bi bi-trash3-fill"></i>
+                    </button>
+                </form>
+            </div>
         </div>
-
-        <div class="row g-3 mb-5 pb-5">
-            {% for t in tiendas %}
-            <div class="col-12">
-                <div class="card border-0 shadow-sm p-3" style="border-radius: 18px; border-left: 6px solid {{ t.color_hex }} !important;">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="ms-2">
-                            <h6 class="fw-bold mb-0 text-dark">{{ t.nombre }}</h6>
-                            <small class="text-muted">Color: {{ t.color_hex }}</small>
-                        </div>
-                        
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-light text-primary rounded-pill border-0 shadow-sm" 
-                                    data-bs-toggle="modal" data-bs-target="#modalEditar{{ t.id }}">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-
-                            <form method="POST" action="{% url 'eliminar_tienda' t.id %}">
-                                {% csrf_token %}
-                                <button type="button" class="btn btn-light text-danger rounded-pill border-0" 
-                                        onclick="confirmDelete(event, this, 'Se borrará la tienda {{ t.nombre }} y TODO su historial.')">
-                                    <i class="bi bi-trash3-fill"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade" id="modalEditar{{ t.id }}" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content border-0" style="border-radius: 25px;">
-                        <div class="modal-header border-0 pt-4 px-4">
-                            <h5 class="modal-title fw-bold"><i class="bi bi-pencil me-2"></i>Editar {{ t.nombre }}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form method="POST" action="{% url 'editar_tienda' t.id %}">
-                            {% csrf_token %}
-                            <div class="modal-body px-4 pb-4">
-                                <div class="mb-4">
-                                    <label class="form-label text-muted small fw-bold text-uppercase">Nombre</label>
-                                    <input type="text" name="nombre" class="form-control form-control-lg border-0 bg-light"
-                                           value="{{ t.nombre }}" style="border-radius: 12px;" required>
-                                </div>
-                                <div class="mb-2">
-                                    <label class="form-label text-muted small fw-bold text-uppercase">Color</label>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <input type="color" name="color_hex"
-                                               class="form-control form-control-color border-0 bg-light" 
-                                               value="{{ t.color_hex }}" style="width: 60px; height: 50px; border-radius: 10px;">
-                                        <small class="text-muted">Cambia el color identificativo</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer border-0 px-4 pb-4">
-                                <button type="submit" class="btn btn-primary w-100 py-3 shadow"
-                                        style="border-radius: 16px; font-weight: 600;">Guardar Cambios</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-12 text-center py-5">
-                <i class="bi bi-shop text-muted opacity-25" style="font-size: 3rem;"></i>
-                <p class="text-muted mt-2">Aún no has creado tiendas.</p>
-            </div>
-            {% endfor %}
-        </div>
-
     </div>
+
+    <div class="modal fade" id="modalEditar{{ t.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm px-4">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header border-0 pt-4 pb-0 justify-content-between align-items-center px-4">
+                    <h6 class="fw-bold text-uppercase mb-0" style="font-size: 0.8rem; letter-spacing: 0.5px;">Editar Tienda</h6>
+                    <button type="button" class="btn-close style-none" data-bs-dismiss="modal" aria-label="Close" style="font-size: 0.75rem;"></button>
+                </div>
+                <form method="POST" action="{% url 'editar_tienda' t.id %}">
+                    {% csrf_token %}
+                    <div class="modal-body p-4">
+                        <div class="mb-3 text-start">
+                            <label class="small fw-bold text-muted mb-2" style="font-size: 0.65rem; letter-spacing: 0.5px;">NOMBRE:</label>
+                            <input type="text" name="nombre" class="form-control border shadow-sm py-2 px-3 text-dark fw-medium"
+                                   value="{{ t.nombre }}" style="border-radius: 10px; font-size: 0.9rem;" required>
+                        </div>
+                        <div class="mb-2 text-start">
+                            <label class="small fw-bold text-muted mb-2" style="font-size: 0.65rem; letter-spacing: 0.5px;">COLOR IDENTIFICATIVO:</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <input type="color" name="color_hex" class="form-control form-control-color border shadow-sm" 
+                                       value="{{ t.color_hex }}" style="width: 50px; height: 40px; border-radius: 8px; padding: 4px;">
+                                <small class="text-muted small">Muestra visual en listas</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold text-uppercase" style="border-radius: 12px; font-size: 0.75rem; letter-spacing: 0.5px;">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-5">
+        <i class="bi bi-shop text-muted opacity-25 display-4 d-block mb-3"></i>
+        <p class="text-muted small fw-medium">Aún no has creado tiendas.</p>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}

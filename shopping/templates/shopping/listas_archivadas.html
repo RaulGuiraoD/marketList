@@ -7,98 +7,84 @@
 <script src="{% static 'js/history/history.js' %}"></script>
 {% endblock %}
 
+{% block seccion_titulo %}Compras pasadas{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6 text-center">
-        
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="{% url 'dashboard' %}" class="btn btn-light rounded-circle shadow-sm btn-back d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                <i class="bi bi-chevron-left"></i>
-            </a>
-            <h4 class="fw-bold mb-0 text-uppercase label-spacing fs-5">Compras pasadas</h4>
-            <div style="width: 40px;"></div> 
-        </div>
-
-        <div class="mb-4">
-            <button type="button" id="btnEditMode" class="btn btn-white btn-sm rounded-pill px-4 shadow-sm border fw-bold text-uppercase" 
-                    style="font-size: 0.75rem; letter-spacing: 0.5px;" onclick="toggleEditMode()">
-                <i class="bi bi-pencil-square me-1 text-primary"></i> Seleccionar listas
-            </button>
-        </div>
-
-        <form id="formDeleteMultiple" method="POST" action="{% url 'eliminar_multiple_listas' %}">
-            {% csrf_token %}
-
-            <div id="selectionTools" class="d-none justify-content-between align-items-center mb-3 px-2">
-                <div class="form-check text-start">
-                    <input class="form-check-input shadow-none" type="checkbox" id="selectAll" onclick="toggleAll(this)">
-                    <label class="form-check-label small fw-bold text-muted" for="selectAll" style="font-size: 0.7rem; letter-spacing: 0.5px;">MARCAR TODAS</label>
-                </div>
-                <span id="countSelected" class="badge bg-primary rounded-pill px-2.5 py-1.5">0</span>
-            </div>
-
-            <section class="pb-5">
-                <div class="row g-3">
-                    {% for lista in listas %}
-                    <div class="col-12">
-                        <div class="card card-historial border-0 shadow-sm p-3 text-start item-seleccionable animate-fade-in" 
-                             style="border-left: 6px solid {{ lista.tienda.color_hex }} !important; cursor: pointer; border-radius: 16px;"
-                             onclick="handleItemClick(event, this)">
-                            
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="check-container d-none me-3">
-                                    <input class="form-check-input lista-checkbox shadow-none" type="checkbox" 
-                                           name="listas_ids" value="{{ lista.id }}" onclick="event.stopPropagation(); updateCount();">
-                                </div>
-
-                                <div class="flex-grow-1 min-w-0">
-                                    <h6 class="fw-bold mb-1 text-dark text-truncate">{{ lista.tienda.nombre }}</h6>
-                                    <p class="text-muted mb-2 text-uppercase fw-bold text-truncate" style="font-size: 0.65rem; letter-spacing: 0.5px;">
-                                        {{ lista.fecha_creacion|date:"d M Y" }} &bull; {{ lista.items.count }} productos
-                                    </p>
-                                    
-                                    {% if lista.total_ticket > 0 %}
-                                    <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1.5 fw-bold" style="font-size: 0.75rem;">
-                                        {{ lista.total_ticket }} €
-                                    </span>
-                                    {% else %}
-                                    <span class="badge bg-light text-muted rounded-pill px-3 py-1.5 fw-medium" style="font-size: 0.75rem;">
-                                        Sin importe
-                                    </span>
-                                    {% endif %}
-                                </div>
-
-                                <div class="d-flex flex-column gap-2 individual-actions ms-2">
-                                    <a href="{% url 'ver_lista' lista.id %}" class="btn btn-sm btn-light text-primary fw-bold text-uppercase px-3" style="font-size: 0.65rem; border-radius: 8px; letter-spacing: 0.5px;">
-                                        Ver
-                                    </a>
-                                    <a href="{% url 'reabrir_lista' lista.id %}" class="btn btn-sm btn-primary-subtle text-primary fw-bold text-uppercase px-3" style="font-size: 0.65rem; border-radius: 8px; letter-spacing: 0.5px;">
-                                        Reabrir
-                                    </a>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    {% empty %}
-                    <div class="col-12 text-center py-5">
-                        <i class="bi bi-archive text-muted opacity-25 display-4 d-block mb-3"></i>
-                        <p class="text-muted small fw-medium">No tienes compras en tu historial</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
-
-            <div id="floatingDeleteBar" class="fixed-bottom p-3 d-none col-12 col-md-8 col-lg-6 mx-auto" 
-                 style="z-index: 1040; bottom: 75px;">
-                <button type="button" class="btn btn-danger w-100 py-3 fw-bold shadow-lg text-uppercase label-spacing" 
-                        style="border-radius: 16px; font-size: 0.85rem; letter-spacing: 0.5px;" onclick="showDeleteModal()">
-                    <i class="bi bi-trash3 me-2"></i> Eliminar seleccionadas
-                </button>
-            </div>
-        </form>
-    </div>
+<div class="mb-4 text-center">
+    <button type="button" id="btnEditMode" class="btn btn-white btn-sm rounded-pill px-4 shadow-sm border fw-bold text-uppercase" 
+            style="font-size: 0.75rem; letter-spacing: 0.5px;" onclick="toggleEditMode()">
+        <i class="bi bi-pencil-square me-1 text-primary"></i> Seleccionar listas
+    </button>
 </div>
+
+<form id="formDeleteMultiple" method="POST" action="{% url 'eliminar_multiple_listas' %}">
+    {% csrf_token %}
+
+    <div id="selectionTools" class="d-none justify-content-between align-items-center mb-3 px-2">
+        <div class="form-check text-start">
+            <input class="form-check-input shadow-none" type="checkbox" id="selectAll" onclick="toggleAll(this)">
+            <label class="form-check-label small fw-bold text-muted" for="selectAll" style="font-size: 0.7rem; letter-spacing: 0.5px;">MARCAR TODAS</label>
+        </div>
+        <span id="countSelected" class="badge bg-primary rounded-pill px-2.5 py-1.5">0</span>
+    </div>
+
+    <section class="pb-5">
+        <div class="d-flex flex-column gap-3">
+            {% for lista in listas %}
+            <div class="card card-historial border-0 shadow-sm p-3 text-start item-seleccionable animate-fade-in" 
+                 style="border-left: 6px solid {{ lista.tienda.color_hex }} !important; cursor: pointer; border-radius: 16px;"
+                 onclick="handleItemClick(event, this)">
+                
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="check-container d-none me-3">
+                        <input class="form-check-input lista-checkbox shadow-none" type="checkbox" 
+                               name="listas_ids" value="{{ lista.id }}" onclick="event.stopPropagation(); updateCount();">
+                    </div>
+
+                    <div class="flex-grow-1 min-w-0">
+                        <h6 class="fw-bold mb-1 text-dark text-truncate">{{ lista.tienda.nombre }}</h6>
+                        <p class="text-muted mb-2 text-uppercase fw-bold text-truncate" style="font-size: 0.65rem; letter-spacing: 0.5px;">
+                            {{ lista.fecha_creacion|date:"d M Y" }} &bull; {{ lista.items.count }} productos
+                        </p>
+                        
+                        {% if lista.total_ticket > 0 %}
+                        <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1.5 fw-bold" style="font-size: 0.75rem;">
+                            {{ lista.total_ticket }} €
+                        </span>
+                        {% else %}
+                        <span class="badge bg-light text-muted rounded-pill px-3 py-1.5 fw-medium" style="font-size: 0.75rem;">
+                            Sin importe
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex flex-column gap-2 individual-actions ms-2">
+                        <a href="{% url 'ver_lista' lista.id %}" class="btn btn-sm btn-light text-primary fw-bold text-uppercase px-3" style="font-size: 0.65rem; border-radius: 8px; letter-spacing: 0.5px;">
+                            Ver
+                        </a>
+                        <a href="{% url 'reabrir_lista' lista.id %}" class="btn btn-sm btn-primary-subtle text-primary fw-bold text-uppercase px-3" style="font-size: 0.65rem; border-radius: 8px; letter-spacing: 0.5px;">
+                            Reabrir
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-5">
+                <i class="bi bi-archive text-muted opacity-25 display-4 d-block mb-3"></i>
+                <p class="text-muted small fw-medium">No tienes compras en tu historial</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <div id="floatingDeleteBar" class="fixed-bottom p-3 d-none w-100 mx-auto" 
+         style="z-index: 1040; bottom: 75px; max-width: 540px;">
+        <button type="button" class="btn btn-danger w-100 py-3 fw-bold shadow-lg text-uppercase label-spacing" 
+                style="border-radius: 16px; font-size: 0.85rem; letter-spacing: 0.5px;" onclick="showDeleteModal()">
+            <i class="bi bi-trash3 me-2"></i> Eliminar seleccionadas
+        </button>
+    </div>
+</form>
 
 <div class="modal fade" id="modalConfirmMultiple" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm px-4">
