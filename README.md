@@ -1,6 +1,6 @@
 # 🛒 MarketList - Tu Compra, Más Fácil que Nunca
 
-**SwiftList** es una aplicación web *mobile-first* diseñada para transformar la experiencia de ir al supermercado. A diferencia de las notas convencionales, SwiftList aprende de tus hábitos, organiza tu ruta por el establecimiento y gestiona tus gastos de forma visual y orgánica.
+**MarketList** es una aplicación web *mobile-first* diseñada para transformar la experiencia de ir al supermercado. A diferencia de las notas convencionales, MarketList aprende de tus hábitos, organiza tu ruta por el establecimiento y gestiona tus gastos de forma visual y orgánica.
 
 ![Status](https://img.shields.io/badge/Status-Finalizado-success)
 ![Python](https://img.shields.io/badge/Python-3.10+-2d5a27)
@@ -9,9 +9,9 @@
 
 ---
 
-## 🌟 ¿Qué hace especial a SwiftList?
+## 🌟 ¿Qué hace especial a MarketList?
 
-SwiftList no es solo una lista de tareas; es un asistente de compra que evoluciona contigo.
+MarketList no es solo una lista de tareas; es un asistente de compra que evoluciona contigo.
 
 ### 🧠 Inteligencia y Rapidez
 - **Catálogo Maestro Automático:** La aplicación recuerda cada producto que ingresas. Con el tiempo, genera patrones de sugerencias para que crear tu lista sea cuestión de segundos.
@@ -48,11 +48,11 @@ La aplicación utiliza una paleta de colores orgánica y cálida, diseñada para
 
 ## 🚀 Instalación Local
 
-Si quieres probar SwiftList en tu propio entorno:
+Si quieres probar MarketList en tu propio entorno:
 
 1. **Clonar el repositorio:**
 
-   git clone [https://github.com/RaulGuiraoD/SwiftList.git](https://github.com/RaulGuiraoD/SwiftList.git)
+   git clone [https://github.com/RaulGuiraoD/MarketList.git](https://github.com/RaulGuiraoD/SwiftList.git)
 
 2. **Instalar dependencias:**
 
