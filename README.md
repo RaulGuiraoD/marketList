@@ -1,4 +1,4 @@
-# 🛒 SwiftList - Tu Compra, Más Fácil que Nunca
+# 🛒 MarketList - Tu Compra, Más Fácil que Nunca
 
 **SwiftList** es una aplicación web *mobile-first* diseñada para transformar la experiencia de ir al supermercado. A diferencia de las notas convencionales, SwiftList aprende de tus hábitos, organiza tu ruta por el establecimiento y gestiona tus gastos de forma visual y orgánica.
 
