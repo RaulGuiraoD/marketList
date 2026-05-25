@@ -4,6 +4,7 @@
  */
 
 let isEditModeActive = false;
+let urlEliminarIndividual = ''; // Variable global persistente para el borrado individual
 
 function toggleEditMode() {
     isEditModeActive = !isEditModeActive;
@@ -94,25 +95,36 @@ function submitMultipleDelete() {
     if (form) form.submit();
 }
 
+/**
+ * Lanza el modal estético de confirmación individual
+ */
 function confirmDeleteIndividual(event, button, message) {
-    event.stopPropagation(); // Evita que se active el modo selección del item de la lista
-    if (confirm(message)) {
-        // Obtiene la URL guardada en el atributo data-url y redirige o procesa mediante POST
-        const url = button.getAttribute('data-url');
-        
-        // Forma limpia recomendada: Crear un formulario temporal e inyectarle el CSRF token para hacer POST seguro
-        const tempForm = document.createElement('form');
-        tempForm.method = 'POST';
-        tempForm.action = url;
-        
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = 'csrfmiddlewaretoken';
-        csrfInput.value = csrfToken;
-        
-        tempForm.appendChild(csrfInput);
-        document.body.appendChild(tempForm);
-        tempForm.submit();
+    event.stopPropagation(); // Evita que se active el modo selección de la fila
+
+    // Capturamos la URL del atributo data-url del botón
+    urlEliminarIndividual = button.getAttribute('data-url');
+
+    // Cambiamos el texto del cuerpo del modal dinámicamente
+    const msgElement = document.getElementById('modalIndividualMessage');
+    if (msgElement) msgElement.innerText = message;
+
+    // Lanzamos el modal de confirmación individual
+    const modalElement = document.getElementById('modalConfirmIndividual');
+    if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+    }
+}
+
+/**
+ * Ejecuta el envío definitivo del formulario de borrado individual
+ */
+function submitIndividualDelete() {
+    if (urlEliminarIndividual) {
+        const form = document.getElementById('formDeleteIndividualActive');
+        if (form) {
+            form.action = urlEliminarIndividual;
+            form.submit();
+        }
     }
 }

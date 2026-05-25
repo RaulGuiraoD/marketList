@@ -147,7 +147,7 @@ def finalizar_compra(request, lista_id):
         if not estaba_finalizada_antes:
             for item in lista.items.filter(comprado=True):
                 producto = item.producto_maestro
-                producto.frecuencia_uso += 1
+                producto.frecuencia_uso += item.cantidad 
                 producto.save()
             
         return redirect('dashboard')
@@ -161,12 +161,15 @@ def listas_archivadas(request):
 @login_required
 def reabrir_lista(request, lista_id):
     lista = get_object_or_404(ListaCompra, id=lista_id, usuario=request.user)
+    
     if lista.esta_finalizada:
         for item in lista.items.filter(comprado=True):
             producto = item.producto_maestro
-            if producto.frecuencia_uso > 0:
-                producto.frecuencia_uso -= 1
-                producto.save()
+            if producto.frecuencia_uso >= item.cantidad:
+                producto.frecuencia_uso -= item.cantidad
+            else:
+                producto.frecuencia_uso = 0
+            producto.save()
     
     lista.esta_finalizada = False
     lista.total_ticket = 0
