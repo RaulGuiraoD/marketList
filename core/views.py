@@ -59,8 +59,6 @@ def perfil(request):
             nombre_limpio = slugify(os.path.splitext(imagen.name)[0])
             nuevo_nombre = f"user_{request.user.id}_{nombre_limpio}{extension}"
             
-            # Al asignarle el nombre modificado al objeto del archivo,
-            # Django se encarga de subirlo e indexarlo en la base de datos automáticamente al hacer .save()
             imagen.name = nuevo_nombre
             perfil.avatar_image = imagen
             
@@ -77,6 +75,8 @@ def perfil(request):
 def dashboard(request):
     from shopping.models import ListaCompra
     from catalog.models import Tienda
+
+    perfil, created = PerfilUsuario.objects.get_or_create(usuario=request.user)
 
     listas_abiertas = ListaCompra.objects.filter(usuario=request.user, esta_finalizada=False).order_by('-fecha_creacion')
     tiendas = Tienda.objects.filter(usuario=request.user).order_by('nombre')
@@ -99,4 +99,5 @@ def dashboard(request):
     return render(request, 'core/dashboard.html', {
         'listas_abiertas': listas_abiertas,
         'tiendas': tiendas,
+        'perfil': perfil,  
     })

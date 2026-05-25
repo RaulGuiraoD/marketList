@@ -21,7 +21,7 @@
         <div class="card-body p-4 text-center">
             <div class="position-relative d-inline-block mb-3">
                 <div class="rounded-circle overflow-hidden d-flex align-items-center justify-content-center mx-auto bg-light border text-secondary shadow-sm" style="width: 100px; height: 100px;">
-                    {% if perfil.avatar_image %}
+                   {% if perfil.avatar_image and perfil.avatar_image.url %}
                         <img id="current-avatar-img" src="{{ perfil.avatar_image.url }}" alt="Avatar" class="w-100 h-100 object-fit-cover">
                     {% else %}
                         <div id="avatar-placeholder" class="d-flex align-items-center justify-content-center w-100 h-100 bg-secondary-subtle">

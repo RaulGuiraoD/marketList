@@ -15,8 +15,8 @@
 
 {% block header_left_dashboard %}
 <a href="{% url 'perfil' %}" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center border-0 p-0 overflow-hidden btn-header-box" style="width: 40px; height: 40px;">
-    {% if user.perfilusuario.avatar_image %}
-        <img src="{{ user.perfilusuario.avatar_image.url }}" alt="Perfil" class="w-100 h-100 object-fit-cover">
+    {% if perfil.avatar_image and perfil.avatar_image.url %}
+        <img src="{{ perfil.avatar_image.url }}" alt="Perfil" class="w-100 h-100 object-fit-cover">
     {% else %}
         <i class="fa-solid fa-user text-secondary" style="font-size: 0.95rem;"></i>
     {% endif %}
@@ -34,7 +34,7 @@
 
         <div class="px-4 mb-2">
             <h4 class="fw-bold mb-1">
-                ¡Hola, {{ user.perfilusuario.nombre_completo|default:user.username }}!
+                ¡Hola, {{ perfil.nombre_completo|default:user.username }}!
             </h4>
             <p class="text-muted small mb-0">
                 {% if gasto_mes_dash > 0 %}
