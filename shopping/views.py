@@ -80,6 +80,9 @@ def ver_lista(request, lista_id):
                 item_existente.save()
             else:
                 ItemLista.objects.create(lista=lista, producto_maestro=producto_maestro, cantidad=cantidad_input)
+            
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success', 'message': 'Producto procesado'})
 
         return redirect('ver_lista', lista_id=lista.id)
     
